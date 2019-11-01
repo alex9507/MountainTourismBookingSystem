@@ -21,7 +21,6 @@ namespace MountainTourismBookingSystem.Data
     }
 }
 
-
 /*
 Add-migration Initial1
 Update-Database

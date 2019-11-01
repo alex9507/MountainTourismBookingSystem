@@ -1,0 +1,330 @@
+﻿@{
+    ViewData["Title"] = "Search";
+}
+@model ChaletModel;
+
+<div id="msgInfo" class="isa_info" style="display: none;">
+    <i class="fa fa-info-circle"></i>
+    <strong>Information!</strong>
+    <strong id="msgInfoText"></strong>
+</div>
+<div id="msgSuccess" class="isa_success" style="display: none;">
+    <i class="fa fa-check"></i>
+    <strong>Success!</strong>
+    <strong id="msgSuccessText"></strong>
+</div>
+<div id="msgWarn" class="isa_warning" style="display: none;">
+    <i class="fa fa-warning"></i>
+    <strong>Warning!</strong>
+    <strong id="msgWarnText"></strong>
+</div>
+<div id="msgError" class="isa_error" style="display: none;">
+    <i class="fa fa-times-circle"></i>
+    <strong>Error!</strong>
+    <strong id="msgErrorText"></strong>
+</div>
+
+<div class="panel panel-heading bootstrap-basic">
+    <BR>
+    <div class="row" id="search">
+        <form id="search-form" action="" method="POST" enctype="multipart/form-data" >
+            <div class="form-group col-xs-12">
+                <input class="form-control" type="text" placeholder="Search" />
+            </div>
+        </form>
+    </div>
+    <div class="row" id="filter">
+        <form>
+            <div class="form-group col-sm-3 col-xs-6">
+                <select data-filter="types" class="filter-types filter form-control">
+                    <option value="">Покажи Всички</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-3 col-xs-6">
+                <select data-filter="regions" class="filter-regions filter form-control">
+                    <option value="">Покажи Всички</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-3 col-xs-6">
+                <select data-filter="mountains" class="filter-mountains filter form-control">
+                    <option value="">Покажи Всички</option>
+                </select>
+            </div>
+            <div class="form-group col-xs-3">
+                <button type="submit" class="btn btn-block btn-primary" id="btnSubmit">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row" id="products">
+</div>
+
+@section Scripts {    
+    <script>
+        $(document).ready(function () {
+            var chalets = [];
+            var types = [];
+            var regions = [];
+            var mountains = [];
+
+            FetchChalets();
+            FetchTypes();
+            FetchRegions();
+            FetchMountains();
+
+            function FetchChalets() {
+                chalets = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/GetChalets",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            chalets.push({
+                                chalet_id: v.chalet_id,
+                                name: v.name,
+                                chalet_type: v.chalet_type,
+                                region_type: v.region_type,
+                                mountain_type: v.mountain_type,
+                                picture: v.picture,
+                                beds: v.beds
+                            })
+                        })
+
+                        GenerateChalets(chalets);
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })
+            }
+            // End of function FetchChalets()
+
+            function FetchTypes() {
+                types = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/GetTypes",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            types.push({
+                                code: v.code,
+                                description: v.description,
+                            })
+                        })
+
+                        AppendTypes(types);   
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })      
+            }
+            // End of function FetchType()
+
+            function AppendTypes(types) {
+                var append_types = "";
+                for (var i = 0; i < types.length; i++) {
+                    var ft_code = types[i].code,
+                        ft_description = types[i].description;
+                    
+                    append_types += "<option value='" + ft_code + "'>" + ft_description + "</option>";                  
+                }
+                $(".filter-types").append(append_types);
+            }
+            // End of function AppendTypes(types)
+
+            function FetchRegions() {
+                regions = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/GetRegions",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            regions.push({
+                                code: v.code,
+                                description: v.description,
+                            })
+                        })
+
+                        AppendRegions(regions);   
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })      
+            }
+            // End of function FetchRegion()
+
+            function AppendRegions(regions) {
+                var append_regions = "";
+                for (var i = 0; i < regions.length; i++) {
+                    var fr_code = regions[i].code,
+                        fr_description = regions[i].description;
+                    
+                    append_regions += "<option value='" + fr_code + "'>" + fr_description + "</option>";                  
+                }
+
+                 $(".filter-regions").append(append_regions);
+            }
+            // End of function AppendRegions(regions)
+
+            function FetchMountains() {
+                mountains = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Search/GetMountains",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            mountains.push({
+                                code: v.code,
+                                description: v.description,
+                            })
+                        })
+
+                        AppendMountains(mountains);   
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })      
+            }
+            // End of function FetchMountains()
+
+            function AppendMountains(mountains) {
+                var append_mountains = "";
+                for (var i = 0; i < mountains.length; i++) {
+                    var fm_code = mountains[i].code,
+                        fm_description = mountains[i].description;
+                    
+                    append_mountains += "<option value='" + fm_code + "'>" + fm_description + "</option>";                  
+                }
+
+                $(".filter-mountains").append(append_mountains);
+            }
+            // End of function AppendMountains(mountains)
+        })
+        // End of $(document).ready(function ()
+
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            chalets = [];
+
+            $(".product").hide();
+            $.ajax({
+                type: "GET",
+                url: "/Search/Chalets",
+                data: {
+                    'strName': $('#search-form input').val().trim(),
+                    'strType': $('.filter-types').val(),
+                    'strRegion': $('.filter-regions').val(),
+                    'strMountain': $('.filter-mountains').val()
+                },
+                success: function (data) {
+                        $.each(data, function (i, v) {
+                            chalets.push({
+                                chalet_id: v.chalet_id,
+                                name: v.name,
+                                chalet_type: v.chalet_type,
+                                region_type: v.region_type,
+                                mountain_type: v.mountain_type,
+                                picture: v.picture,
+                                beds: v.beds
+                            })
+                        })
+                        GenerateChalets(chalets);
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+             })
+        })
+        // End of $("#search-form").submit(function()
+
+        function GenerateChalets(chalets) {
+            var generate_chalets = "";
+            for (var i = 0; i < chalets.length; i++) {
+                var fc_name = chalets[i].name,
+                    fc_chalet_type = chalets[i].chalet_type,
+                    fc_region_type = chalets[i].region_type,
+                    fc_mountain_type = chalets[i].mountain_type,
+                    fc_picture = chalets[i].picture,
+                    fc_beds = chalets[i].beds;
+
+                generate_chalets += "<div class='col-sm-4 chalet' data-name='" + fc_name
+                        + "' data-type='" + fc_chalet_type
+                        + "' data-region='" + fc_region_type
+                        + "' data-mountain='" + fc_mountain_type
+                        + "' data-beds='" + fc_beds + "'> "
+                        + "<div class='panel panel-default bootstrap-basic'> "
+                        + "<img src='images/" + fc_picture + "' style='height: 100%; width: 100%; object-fit: contain'>"
+                        + "<BR><BR><center>Име: " + fc_name + "</center>"
+                        + "<center>Тип: " + fc_chalet_type + "</center>"
+                        + "<center>Регион: " + fc_region_type + "</center>"
+                        + "<center>Планина: " + fc_mountain_type + "</center>"
+                        + "<center>Легла: " + fc_beds + "</center>"
+                        + "<BR></div></div>";
+            }
+            $("#products").html(generate_chalets);
+        }
+        // End of function GenerateChalets(chalets)
+
+        var filtersObject = {};
+        $(".filter").on("change", function () {
+            
+	        var filterName = $(this).data("filter"),
+	        	filterVal = $(this).val();
+            
+	        if (filterVal == "") {
+	        	delete filtersObject[filterName];
+	        } else {
+	        	filtersObject[filterName] = filterVal;
+	        }
+	        
+            var dataForController = [];
+	        for (var key in filtersObject) {
+                if (filtersObject.hasOwnProperty(key))
+                {
+                    dataForController = {
+                        'strName': $('#search-form input').val().trim(),
+                        'strType': $('.filter-types').val(),
+                        'strRegion': $('.filter-regions').val(),
+                        'strMountain': $('.filter-mountains').val()
+                    }
+                }
+            }
+
+            chalets = [];
+            $.ajax({
+                type: "GET",
+                url: "/Search/Chalets",
+                data: dataForController,
+                success: function (data) {
+                        $.each(data, function (i, v) {
+                            chalets.push({
+                                chalet_id: v.chalet_id,
+                                name: v.name,
+                                chalet_type: v.chalet_type,
+                                region_type: v.region_type,
+                                mountain_type: v.mountain_type,
+                                picture: v.picture,
+                                beds: v.beds
+                            })
+                        })
+                        GenerateChalets(chalets);
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+             })
+        })
+        // End of $(".filter").on("change",function()
+
+    </script>
+}
