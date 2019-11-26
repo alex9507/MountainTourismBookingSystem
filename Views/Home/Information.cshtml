@@ -3,77 +3,105 @@
 }
 @model ChaletModel;
 
-<div class="panel panel-default bootstrap-basic">
-    <div class="panel-heading">
-        <h3 class="panel-title">Информация за хижа @Model.name</h3>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Обща информация</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(Model.information)</p>
-    </div>
-
-    <div class="panel panel-default bootstrap-basic">
-        <img src="~/images/@Model.picture" style='height: 100%; width: 100%; object-fit: contain'><BR>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Местонахождение</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.location_info)</p>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Георграфски координати</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.location_coordinates)</p>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Точно местоположение</h3>
-        </div>
-        <div style="height:550px; width:100%; display:inline-block; overflow:hidden;">
-            <iframe class="custom-google-map" style="position:relative; top:-50px; border:none;"
-                    src="@Model.location_map">
-            </iframe>
-        </div>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Надморска височина</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.altitude)</p>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Изходен пункт за обекта</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.starting_point)</p>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Стопанин</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.owner)</p>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.gsm)</p>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.contacts)</p>
-    </div>
-    <!--.........................................................-->
-    <div class="panel panel-default bootstrap-basic">
-        <div class="panel-heading">
-            <h3 class="panel-title">Маршрути и съседни туристически обекти</h3>
-        </div>
-        <p class="chalet-info" align="justify">@Html.Raw(@Model.routes)</p>
-    </div>
-    <!--.........................................................-->
-    <button value="submit" id="submit" class="btn btn-success btn-lg center-block">Pay with <span id="card-type">Card</span></button>
-    <BR>
+<div id="msgInfo" class="isa_info" style="display: none;">
+    <i class="fa fa-info-circle"></i>
+    <strong>Information!</strong>
+    <strong id="msgInfoText"></strong>
 </div>
+<div id="msgSuccess" class="isa_success" style="display: none;">
+    <i class="fa fa-check"></i>
+    <strong>Success!</strong>
+    <strong id="msgSuccessText"></strong>
+</div>
+<div id="msgWarn" class="isa_warning" style="display: none;">
+    <i class="fa fa-warning"></i>
+    <strong>Warning!</strong>
+    <strong id="msgWarnText"></strong>
+</div>
+<div id="msgError" class="isa_error" style="display: none;">
+    <i class="fa fa-times-circle"></i>
+    <strong>Error!</strong>
+    <strong id="msgErrorText"></strong>
+</div>
+
+@if (Model != null)
+{
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Информация за хижа @Model.name</h3>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Обща информация</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(Model.information)</p>
+        </div>
+
+        <div class="panel panel-default bootstrap-basic">
+            <img src="~/images/@Model.picture" style='height: 100%; width: 100%; object-fit: contain'><BR>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Местонахождение</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.location_info)</p>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Георграфски координати</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.location_coordinates)</p>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Точно местоположение</h3>
+            </div>
+            <div style="height:550px; width:100%; display:inline-block; overflow:hidden;">
+                <iframe class="custom-google-map" style="position: relative; height: 600px; width: 100%; top:-50px; border:none;"
+                        src="@Model.location_map">
+                </iframe>
+            </div>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Надморска височина</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.altitude)</p>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Изходен пункт за обекта</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.starting_point)</p>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Стопанин</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.owner)</p>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.gsm)</p>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.contacts)</p>
+        </div>
+        <!--.........................................................-->
+        <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Маршрути и съседни туристически обекти</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.routes)</p>
+        </div>
+        <!--.........................................................-->
+        <button value="submit" id="submit" class="btn btn-success btn-lg center-block">Pay with <span id="card-type">Card</span></button>
+        <BR>
+    </div>
+}
+else
+{
+    @Url.Action("Index", "Search")
+}

@@ -42,11 +42,16 @@ namespace MountainTourismBookingSystem.Controllers
             return View();
         }
 
-        public IActionResult Information()
+        public IActionResult Information(int id)
         {
             ViewData["Message"] = "Информация.";
 
-            var model = _dbContext.Chalet.FirstOrDefault();
+            var model = _dbContext.Chalet.Where(x => x.challet_id == id).FirstOrDefault();
+
+            if (model == null)
+            {
+                return View("Index", "Home");
+            }
 
             return View(model);
         }

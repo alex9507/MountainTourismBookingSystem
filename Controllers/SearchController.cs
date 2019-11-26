@@ -35,6 +35,7 @@ namespace MountainTourismBookingSystem.Controllers
                            join m in _dbContext.Mountain on c.mountain_type equals m.code
                            select new
                            {
+                               chalet_id = c.challet_id,
                                name = c.name,
                                picture = c.picture,
                                chalet_type = t.description,
@@ -95,6 +96,7 @@ namespace MountainTourismBookingSystem.Controllers
                            && (!(string.IsNullOrEmpty(strMountain)) ? m.code == strMountain : 1 == 1)
                            select new
                            {
+                               chalet_id = c.challet_id,
                                name = c.name,
                                picture = c.picture,
                                chalet_type = t.description,
