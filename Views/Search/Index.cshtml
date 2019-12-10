@@ -265,7 +265,7 @@
                    + "  data-beds='" + fc_beds + "'"
                    + "  id='" + fc_id + "'"
                    + " > "
-                   + " <a href='@Url.Action("Information", "Home")?id="+ fc_id +"'> "
+                   + " <a href='@Url.Action("Information", "Search")?id="+ fc_id +"'> "
                    + " <div class='panel panel-default bootstrap-basic'> "
                    + "  <img src='images/" + fc_picture + "' style='height: 100%; width: 100%; object-fit: contain'>"
                    + "  <BR><BR>"
@@ -333,14 +333,6 @@
             })
         })
         // End of $(".filter").on("change",function()
-
-       // //$(document).on("click", $('#' + this.id), function () {
-       // $(document).on("click", '#' + this.id, function () {
-       //     console.log('click');
-       //    var url = '@Url.Action("Information", "Home")';
-       //     window.location.href = url;
-       // )
-        // End of $("#products").on("click", function ()
 
     </script>
 }

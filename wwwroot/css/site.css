@@ -117,8 +117,8 @@ body {
     background-color: #FFD2D2;
 }
 
-    .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
-        margin: 10px 22px;
-        font-size: 2em;
-        vertical-align: middle;
-    }
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin: 10px 22px;
+    font-size: 2em;
+    vertical-align: middle;
+}

@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<BR>
+<BR>
+<BR>
+<BR>
+
+<div id="msgInfo" class="isa_info" style="display: none;">
+    <i class="fa fa-info-circle"></i>
+    <strong>Information!</strong>
+    <strong id="msgInfoText"></strong>
+</div>
+<div id="msgSuccess" class="isa_success" style="display: none;">
+    <i class="fa fa-check"></i>
+    <strong>Success!</strong>
+    <strong id="msgSuccessText"></strong>
+</div>
+<div id="msgWarn" class="isa_warning" style="display: none;">
+    <i class="fa fa-warning"></i>
+    <strong>Warning!</strong>
+    <strong id="msgWarnText"></strong>
+
+</div>
+<div id="msgError" class="isa_error" style="display: none;">
+    <i class="fa fa-times-circle"></i>
+    <strong>Error!</strong>
+    <strong id="msgErrorText"></strong>
+</div>
+
+<div class="modal-body">
+    <div style="width:100%; margin:0 auto;">
+        <table id="myTableChalets" class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Вид на Обекта</th>
+                    <th>Местност</th>
+                    <th>Планина</th>
+                    <th>Брой легла</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>   
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTableChalets').DataTable({
+                "processing": true,
+                "serverSide": false,
+                "filter": true,
+                "orderMulti": false,
+                "ajax": {
+                    "url":      "/Admin/GetData",
+                    "type":     "GET",
+                    "datatype": "json",
+                    "dataSrc":  ""
+                },
+                "columns": [
+                    { "data": "c_name",           "name": "c_name",           "autoWidth": true },
+                    { "data": "c_chalet_type",    "name": "c_chalet_type",    "autoWidth": true },
+                    { "data": "c_region_type",    "name": "c_region_type",    "autoWidth": true },
+                    { "data": "c_mountain_type",  "name": "c_mountain_type",  "autoWidth": true },
+                    { "data": "c_beds",           "name": "c_beds",           "autoWidth": true }
+                ],
+                "language": {
+                    "emptyTable": "Не са намерени данни."
+                }
+            });
+        });
+        // End of function $(document).ready(function ()       
+    </script>
+}

@@ -42,20 +42,6 @@ namespace MountainTourismBookingSystem.Controllers
             return View();
         }
 
-        public IActionResult Information(int id)
-        {
-            ViewData["Message"] = "Информация.";
-
-            var model = _dbContext.Chalet.Where(x => x.challet_id == id).FirstOrDefault();
-
-            if (model == null)
-            {
-                return View("Index", "Home");
-            }
-
-            return View(model);
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -63,22 +49,3 @@ namespace MountainTourismBookingSystem.Controllers
         }
     }
 }
-
-// PAYPAL:
-// https://medium.com/@pmareke/using-paypal-sdk-with-net-core-full-explanation-66aab76cef66
-
-// https://codepen.io/ericwinton/pen/jqKyyq
-
-// console.log(v.chalet_id);
-
-// var items = context.MyTable.Where(x => x.Id == id)
-//              .Select(x => new
-//              {
-//                  P1 = table.Prop1,
-//                  P2 = table.Prop2
-//              });
-//
-// This will translate into a sql call like:
-//
-// SELECT p.Prop1, p.Prop2 FROM mytable p WHERE p.Id = id
-

@@ -20,8 +20,3 @@ namespace MountainTourismBookingSystem.Data
         public DbSet<ChaletModel> Chalet { get; set; }
     }
 }
-
-/*
-Add-migration Initial1
-Update-Database
-*/

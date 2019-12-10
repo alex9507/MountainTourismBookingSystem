@@ -1,0 +1,39 @@
+﻿
+PAYPAL:
+https://medium.com/@pmareke/using-paypal-sdk-with-net-core-full-explanation-66aab76cef66
+https://developer.paypal.com/
+
+https://codepen.io/ericwinton/pen/jqKyyq
+
+console.log(v.chalet_id);
+
+var items = context.MyTable.Where(x => x.Id == id)
+             .Select(x => new
+             {
+                 P1 = table.Prop1,
+                 P2 = table.Prop2
+             });
+
+This will translate into a sql call like:
+
+SELECT p.Prop1, p.Prop2 FROM mytable p WHERE p.Id = id
+
+https://developer.paypal.com/developer/applications/edit/SB:QWNqMlZFbFA0U1FsbFNSRkNQdmFlb2p2SjNaNlN2c3FoTDhqOHQzZjZPUHVBM2RlRFRnTzROMHkwSkhXOHlETWR6c1lJU1hYNUQ3Xzl3X2U=
+
+https://github.com/rizksobhi/PaypalExpressCheckout
+
+Gmail:
+MountainTourismBookingSystem@gmail.com
+MTB0ok95
+
+PayPal and Stripe:
+MountainTourismBookingSystem@gmail.com
+!MTB0ok95
+
+88 935 1232
+01 01 1995
+
+https://blog.elmah.io/accepting-payments-with-stripe-and-aspnet-core/
+
+Add-migration Initial1
+Update-Database

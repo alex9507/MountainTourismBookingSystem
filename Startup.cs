@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using MountainTourismBookingSystem.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Stripe;
 
 namespace MountainTourismBookingSystem
 {
@@ -41,11 +43,15 @@ namespace MountainTourismBookingSystem
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["PublishableKey"];
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,6 +68,9 @@ namespace MountainTourismBookingSystem
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
 
             app.UseMvc(routes =>
             {

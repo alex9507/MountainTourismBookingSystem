@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
 using Newtonsoft.Json;
+using Stripe;
 
 namespace MountainTourismBookingSystem.Controllers
 {
     public class SearchController : Controller
     {
+        private int amount = 100;
         private readonly ApplicationDbContext _dbContext;
 
         public SearchController(ApplicationDbContext dbContext)
@@ -22,7 +24,7 @@ namespace MountainTourismBookingSystem.Controllers
         public IActionResult Index()
         {
             ViewData["Message"] = "Търсене";
-
+            ViewBag.PaymentAmount = amount;
             return View();
         }
 
@@ -35,13 +37,14 @@ namespace MountainTourismBookingSystem.Controllers
                            join m in _dbContext.Mountain on c.mountain_type equals m.code
                            select new
                            {
-                               chalet_id = c.challet_id,
+                               chalet_id = c.unique_id,
                                name = c.name,
                                picture = c.picture,
                                chalet_type = t.description,
                                region_type = r.description,
                                mountain_type = m.description,
-                               beds = c.beds
+                               beds = c.beds,
+                               price = c.price
                            }).ToList();
 
             return Json(chalets);
@@ -96,16 +99,51 @@ namespace MountainTourismBookingSystem.Controllers
                            && (!(string.IsNullOrEmpty(strMountain)) ? m.code == strMountain : 1 == 1)
                            select new
                            {
-                               chalet_id = c.challet_id,
+                               chalet_id = c.unique_id,
                                name = c.name,
                                picture = c.picture,
                                chalet_type = t.description,
                                region_type = r.description,
                                mountain_type = m.description,
-                               beds = c.beds
+                               beds = c.beds,
+                               price = c.price
                            }).ToList();
 
             return Json(chalets);
+        }
+
+        public IActionResult Information(Guid id)
+        {
+            ViewData["Message"] = "Информация.";
+
+            var model = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+
+            if (model == null)
+            {
+                return View("Index", "Home");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Processing(string stripeToken, string stripeEmail)
+        {
+            Dictionary<string, string> Metadata = new Dictionary<string, string>();
+            Metadata.Add("Product", "RubberDuck");
+            Metadata.Add("Quantity", "10");
+            var options = new ChargeCreateOptions
+            {
+                Amount = amount,
+                Currency = "EUR",
+                Description = "Buying 10 rubber ducks",
+                Source = stripeToken,
+                ReceiptEmail = stripeEmail,
+                Metadata = Metadata
+            };
+            var service = new ChargeService();
+            Charge charge = service.Create(options);
+            return View();
         }
     }
 }

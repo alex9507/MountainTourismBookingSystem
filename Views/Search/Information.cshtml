@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<MountainTourismBookingSystem.Data.StripeSettings> Stripe
+@{
     ViewData["Title"] = "Information";
 }
 @model ChaletModel;
@@ -23,6 +25,8 @@
     <strong>Error!</strong>
     <strong id="msgErrorText"></strong>
 </div>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 @if (Model != null)
 {
@@ -97,11 +101,77 @@
             <p class="chalet-info" align="justify">@Html.Raw(@Model.routes)</p>
         </div>
         <!--.........................................................-->
-        <button value="submit" id="submit" class="btn btn-success btn-lg center-block">Pay with <span id="card-type">Card</span></button>
+         <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Брой легла</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.beds)</p>
+        </div>
+        <!--.........................................................-->
+                 <div class="panel panel-default bootstrap-basic">
+            <div class="panel-heading">
+                <h3 class="panel-title">Цена на нощувка</h3>
+            </div>
+            <p class="chalet-info" align="justify">@Html.Raw(@Model.price)</p>
+        </div>
+        <!--.........................................................-->
         <BR>
+        <div>
+            <form action="/Payment/Processing" method="POST">
+                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="@Stripe.Value.PublishableKey"
+                        data-amount="10"
+                        data-name="[My Company Name]"
+                        data-description="10 rubberducks for 1$ each"
+                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                        data-locale="en"
+                        data-zip-code="true"
+                        data-label="Pay 10$">
+                </script>
+            </form>
+        </div>
+
+        <script>
+
+            // <button value="submit" id="paypal-button" class="btn btn-success btn-lg center-block"></button>
+            // <BR>
+            // <button id="checkout-button">Pay</button>
+            // var stripe = Stripe('@Stripe.Value.PublishableKey');
+            // 
+            // var checkoutButton = document.querySelector('#checkout-button');
+            // checkoutButton.addEventListener('click', function () {
+            //   stripe.redirectToCheckout({
+            //     items: [{
+            //       // Define the product and SKU in the Dashboard first, and use the SKU
+            //       // ID in your client-side code.
+            //       sku: 'sku_123',
+            //       quantity: 1
+            //     }],
+            //     successUrl: 'https://localhost:44385/Payment/Success',
+            //     cancelUrl: 'https://localhost:44385/Payment/Cancel'
+            //   });
+            // });
+            // 
+            // var CREATE_PAYMENT_URL = 'https://localhost:44385/Payment/CreatePayment';
+            // var EXECUTE_PAYMENT_URL = 'https://localhost:44385/Payment/ExecutePayment';
+            // paypal.Button.render({
+            //     env: 'sandbox', //'production',
+            //     commit: true, // Show a 'Pay Now' button
+            //     payment: function () {
+            //         return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {                     
+            //             return data.id;
+            //         });
+            //     },
+            //     onAuthorize: function (data) {
+            //         return paypal.request.post(EXECUTE_PAYMENT_URL, {
+            //             paymentID: data.paymentID,
+            //             payerID: data.payerID
+            //         }).then(function () {
+            //             window.location.href = 'https://localhost:44385/Payment/Success'
+            //         });
+            //     }
+            // }, '#paypal-button');
+          
+        </script>
     </div>
-}
-else
-{
-    @Url.Action("Index", "Search")
 }
