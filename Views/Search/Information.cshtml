@@ -108,28 +108,29 @@
             <p class="chalet-info" align="justify">@Html.Raw(@Model.beds)</p>
         </div>
         <!--.........................................................-->
-                 <div class="panel panel-default bootstrap-basic">
+         <div class="panel panel-default bootstrap-basic">
             <div class="panel-heading">
                 <h3 class="panel-title">Цена на нощувка</h3>
             </div>
             <p class="chalet-info" align="justify">@Html.Raw(@Model.price)</p>
-        </div>
-        <!--.........................................................-->
-        <BR>
-        <div>
-            <form action="/Payment/Processing" method="POST">
-                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                        data-key="@Stripe.Value.PublishableKey"
-                        data-amount="10"
-                        data-name="[My Company Name]"
-                        data-description="10 rubberducks for 1$ each"
-                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                        data-locale="en"
-                        data-zip-code="true"
-                        data-label="Pay 10$">
+         </div>
+         <!--.........................................................-->
+         <BR>
+
+         <div>
+            <form asp-action="Charge" asp-controller="Payment" method="POST">
+                <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
+                    data-key="@Stripe.Value.PublishableKey"
+                    data-amount="100"
+                    data-name="[My Company Name]"
+                    data-description="Хижа @Model.name за цена: @Model.price"
+                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                    data-locale="en"
+                    data-zip-code="true"
+                    data-label="Резервирай за @Html.Raw(@Model.price)">
                 </script>
             </form>
-        </div>
+         </div>
 
         <script>
 
