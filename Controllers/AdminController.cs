@@ -95,5 +95,14 @@ namespace MountainTourismBookingSystem.Controllers
 
             return Json(data);
         }
+
+        public IActionResult Delete(Guid id)
+        {
+            ChaletModel data = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+            _dbContext.Chalet.Remove(data);
+            _dbContext.SaveChanges();
+
+            return Json(data);
+        }
     }
 }

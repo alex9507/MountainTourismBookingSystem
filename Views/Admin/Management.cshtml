@@ -512,6 +512,32 @@
 
             $('#myModelAddEditChalet').modal();
         }
+        // End of function openNewChaletForm() {
+
+        function Delete(id) {
+            if (confirm('Сигурни ли сте, че искате да изтриете този Обект ?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Admin")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                        }
+                        else {
+                            $('#msgErrorText').empty().append("Има проблем при изтриването на Обекта.");
+                            $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                        }
+                    },
+                    error: function () {
+                        $('#msgErrorText').empty().append("Има проблем при изтриването на Обекта.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+            
+                });
+            }
+        }
+        // End of function Delete(id) {
 
     </script>
 }
