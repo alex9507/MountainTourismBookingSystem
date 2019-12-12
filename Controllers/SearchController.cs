@@ -35,6 +35,7 @@ namespace MountainTourismBookingSystem.Controllers
                            join t in _dbContext.ChaletType on c.chalet_type equals t.code
                            join r in _dbContext.Region on c.region_type equals r.code
                            join m in _dbContext.Mountain on c.mountain_type equals m.code
+                           orderby c.name ascending
                            select new
                            {
                                chalet_id = c.unique_id,

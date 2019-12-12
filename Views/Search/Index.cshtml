@@ -209,8 +209,7 @@
             // End of function AppendMountains(mountains)
         })
         // End of $(document).ready(function ()
-
-        $('#btnSubmit').click(function (e) {
+        $(document).on('click', '#btnSubmit', function (e) {
             e.preventDefault();
             chalets = [];
 
@@ -244,7 +243,7 @@
                 }
             })
         })
-        // End of $("#search-form").submit(function()
+        // End of $(document).on('click', '#btnSubmit', function (e) {
 
         function GenerateChalets(chalets) {
             var generate_chalets = "";

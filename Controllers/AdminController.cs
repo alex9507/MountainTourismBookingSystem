@@ -87,8 +87,11 @@ namespace MountainTourismBookingSystem.Controllers
             else
             {
                 data.dt = DateTime.Now;
+                data.unique_id = Guid.NewGuid();
                 _dbContext.Chalet.Add(data);
             }
+
+            _dbContext.SaveChanges();
 
             return Json(data);
         }

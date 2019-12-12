@@ -37,3 +37,6 @@ https://blog.elmah.io/accepting-payments-with-stripe-and-aspnet-core/
 
 Add-migration Initial1
 Update-Database
+
+Размер на Снимките:
+700 х 517
