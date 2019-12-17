@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MountainTourismBookingSystem.Data;
 
 namespace MountainTourismBookingSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191216122348_add_reservation")]
+    partial class add_reservation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +308,6 @@ namespace MountainTourismBookingSystem.Data.Migrations
                     b.Property<long?>("chalet_id")
                         .IsRequired();
 
-                    b.Property<string>("color")
-                        .HasMaxLength(50);
-
                     b.Property<string>("currency")
                         .HasMaxLength(3);
 
@@ -317,8 +316,6 @@ namespace MountainTourismBookingSystem.Data.Migrations
                     b.Property<DateTime>("dt_from");
 
                     b.Property<DateTime>("dt_to");
-
-                    b.Property<bool>("is_full_day");
 
                     b.Property<string>("status")
                         .HasMaxLength(50);

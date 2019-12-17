@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MountainTourismBookingSystem.Data;
 using PaypalExpressCheckout.BusinessLogic.Interfaces;
 using Stripe;
 
@@ -17,14 +18,22 @@ namespace MountainTourismBookingSystem.Controllers
         //     _PaypalServices = paypalServices;
         // }
 
+        private readonly ApplicationDbContext _dbContext;
+
+        public PaymentController(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public IActionResult Index()
         {
-
             return View();
         }
 
-        public IActionResult Charge(string stripeEmail, string stripeToken)
+        public IActionResult Charge(string stripeEmail, string stripeToken, Guid id)
         {
+            var vChalet = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+
             var customers = new CustomerService();
             var charges = new ChargeService();
 
@@ -36,9 +45,9 @@ namespace MountainTourismBookingSystem.Controllers
 
             var charge = charges.Create(new ChargeCreateOptions
             {
-                Amount = 1111,
-                Description = "Test Payment",
-                Currency = "usd",
+                Amount = (long)vChalet.price * 100,
+                Description = vChalet.name + " Reservation",
+                Currency = "bgn",
                 Customer = customer.Id,
                 ReceiptEmail = stripeEmail,
                 Metadata = new Dictionary<string, string>()
@@ -51,13 +60,21 @@ namespace MountainTourismBookingSystem.Controllers
             if (charge.Status == "succeeded")
             {
                 string BalanceTransactionId = charge.BalanceTransactionId;
-                return View();
+                return RedirectToAction("Success");
             }
             else
             {
-
+                return RedirectToAction("Cancel");
             }
+        }
 
+        public IActionResult Success()
+        {
+            return View();
+        }
+
+        public IActionResult Cancel()
+        {
             return View();
         }
 

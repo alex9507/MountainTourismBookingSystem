@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<MountainTourismBookingSystem.Data.StripeSettings> Stripe
 @{
-    ViewData["Title"] = "Information";
+    ViewData["Title"] = "Информация";
 }
 @model ChaletModel;
 
@@ -26,153 +26,97 @@
     <strong id="msgErrorText"></strong>
 </div>
 
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
-
 @if (Model != null)
 {
+<div class="panel panel-default bootstrap-basic">
+    <div class="panel-heading">
+        <h3 class="panel-title">Информация за хижа @Model.name</h3>
+    </div>
+    <!--.........................................................-->
     <div class="panel panel-default bootstrap-basic">
         <div class="panel-heading">
-            <h3 class="panel-title">Информация за хижа @Model.name</h3>
+            <h3 class="panel-title">Обща информация</h3>
         </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Обща информация</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(Model.information)</p>
-        </div>
-
-        <div class="panel panel-default bootstrap-basic">
-            <img src="~/images/@Model.picture" style='height: 100%; width: 100%; object-fit: contain'><BR>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Местонахождение</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.location_info)</p>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Георграфски координати</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.location_coordinates)</p>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Точно местоположение</h3>
-            </div>
-            <div style="height:550px; width:100%; display:inline-block; overflow:hidden;">
-                <iframe class="custom-google-map" style="position: relative; height: 600px; width: 100%; top:-50px; border:none;"
-                        src="@Model.location_map">
-                </iframe>
-            </div>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Надморска височина</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.altitude)</p>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Изходен пункт за обекта</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.starting_point)</p>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Стопанин</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.owner)</p>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.gsm)</p>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.contacts)</p>
-        </div>
-        <!--.........................................................-->
-        <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Маршрути и съседни туристически обекти</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.routes)</p>
-        </div>
-        <!--.........................................................-->
-         <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Брой легла</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.beds)</p>
-        </div>
-        <!--.........................................................-->
-         <div class="panel panel-default bootstrap-basic">
-            <div class="panel-heading">
-                <h3 class="panel-title">Цена на нощувка</h3>
-            </div>
-            <p class="chalet-info" align="justify">@Html.Raw(@Model.price)</p>
-         </div>
-         <!--.........................................................-->
-         <BR>
-
-         <div>
-            <form asp-action="Charge" asp-controller="Payment" method="POST">
-                <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
-                    data-key="@Stripe.Value.PublishableKey"
-                    data-amount="100"
-                    data-name="[My Company Name]"
-                    data-description="Хижа @Model.name за цена: @Model.price"
-                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                    data-locale="en"
-                    data-zip-code="true"
-                    data-label="Резервирай за @Html.Raw(@Model.price)">
-                </script>
-            </form>
-         </div>
-
-        <script>
-
-            // <button value="submit" id="paypal-button" class="btn btn-success btn-lg center-block"></button>
-            // <BR>
-            // <button id="checkout-button">Pay</button>
-            // var stripe = Stripe('@Stripe.Value.PublishableKey');
-            // 
-            // var checkoutButton = document.querySelector('#checkout-button');
-            // checkoutButton.addEventListener('click', function () {
-            //   stripe.redirectToCheckout({
-            //     items: [{
-            //       // Define the product and SKU in the Dashboard first, and use the SKU
-            //       // ID in your client-side code.
-            //       sku: 'sku_123',
-            //       quantity: 1
-            //     }],
-            //     successUrl: 'https://localhost:44385/Payment/Success',
-            //     cancelUrl: 'https://localhost:44385/Payment/Cancel'
-            //   });
-            // });
-            // 
-            // var CREATE_PAYMENT_URL = 'https://localhost:44385/Payment/CreatePayment';
-            // var EXECUTE_PAYMENT_URL = 'https://localhost:44385/Payment/ExecutePayment';
-            // paypal.Button.render({
-            //     env: 'sandbox', //'production',
-            //     commit: true, // Show a 'Pay Now' button
-            //     payment: function () {
-            //         return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {                     
-            //             return data.id;
-            //         });
-            //     },
-            //     onAuthorize: function (data) {
-            //         return paypal.request.post(EXECUTE_PAYMENT_URL, {
-            //             paymentID: data.paymentID,
-            //             payerID: data.payerID
-            //         }).then(function () {
-            //             window.location.href = 'https://localhost:44385/Payment/Success'
-            //         });
-            //     }
-            // }, '#paypal-button');
-          
-        </script>
+        <p class="chalet-info" align="justify">@Html.Raw(Model.information)</p>
     </div>
+
+    <div class="panel panel-default bootstrap-basic">
+        <img src="~/images/@Model.picture" style='height: 100%; width: 100%; object-fit: contain'><BR>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Местонахождение</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.location_info)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Георграфски координати</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.location_coordinates)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Точно местоположение</h3>
+        </div>
+        <div style="height:550px; width:100%; display:inline-block; overflow:hidden;">
+            <iframe class="custom-google-map" style="position: relative; height: 600px; width: 100%; top:-50px; border:none;"
+                    src="@Model.location_map">
+            </iframe>
+        </div>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Надморска височина</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.altitude)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Изходен пункт за обекта</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.starting_point)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Стопанин</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.owner)</p>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.gsm)</p>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.contacts)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Маршрути и съседни туристически обекти</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.routes)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Брой легла</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.beds)</p>
+    </div>
+    <!--.........................................................-->
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Цена на нощувка</h3>
+        </div>
+        <p class="chalet-info" align="justify">@Html.Raw(@Model.price)</p>
+    </div>
+    <!--.........................................................-->
+    <button id="btnRese" class="btn btn-default btn-sm center-block" onclick="location.href='@Url.Action("Index", "Reservation")?id=@Model.unique_id'">
+        <span class="glyphicon glyphicon-bookmark"></span> Резервиране
+    </button>
+    <BR>
+    <!--.........................................................-->
+</div>
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MountainTourismBookingSystem.Data;
 
 namespace MountainTourismBookingSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191216121917_reservation_model_and_table")]
+    partial class reservation_model_and_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,45 +291,6 @@ namespace MountainTourismBookingSystem.Data.Migrations
                     b.HasKey("code");
 
                     b.ToTable("Region");
-                });
-
-            modelBuilder.Entity("MountainTourismBookingSystem.Models.ReservationModel", b =>
-                {
-                    b.Property<long?>("reservation_id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double?>("amount")
-                        .IsRequired();
-
-                    b.Property<string>("balance_transaction_id")
-                        .HasMaxLength(100);
-
-                    b.Property<long?>("chalet_id")
-                        .IsRequired();
-
-                    b.Property<string>("color")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("currency")
-                        .HasMaxLength(3);
-
-                    b.Property<DateTime>("dt");
-
-                    b.Property<DateTime>("dt_from");
-
-                    b.Property<DateTime>("dt_to");
-
-                    b.Property<bool>("is_full_day");
-
-                    b.Property<string>("status")
-                        .HasMaxLength(50);
-
-                    b.Property<Guid>("user_id");
-
-                    b.HasKey("reservation_id");
-
-                    b.ToTable("Reservation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,0 +1,249 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<MountainTourismBookingSystem.Data.StripeSettings> Stripe
+@{
+    ViewData["Title"] = "Календар за Резервации";
+}
+@model ChaletModel;
+
+<BR>
+<BR>
+<BR>
+<BR>
+
+<div style="background-color:whitesmoke">
+    <div id="calendar"></div>
+</div>
+
+<div id="msgInfo" class="isa_info" style="display: none;">
+    <i class="fa fa-info-circle"></i>
+    <strong>Information!</strong>
+    <strong id="msgInfoText"></strong>
+</div>
+<div id="msgSuccess" class="isa_success" style="display: none;">
+    <i class="fa fa-check"></i>
+    <strong>Success!</strong>
+    <strong id="msgSuccessText"></strong>
+</div>
+<div id="msgWarn" class="isa_warning" style="display: none;">
+    <i class="fa fa-warning"></i>
+    <strong>Warning!</strong>
+    <strong id="msgWarnText"></strong>
+</div>
+<div id="msgError" class="isa_error" style="display: none;">
+    <i class="fa fa-times-circle"></i>
+    <strong>Error!</strong>
+    <strong id="msgErrorText"></strong>
+</div>
+
+<div id="myModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="reservationChaletName"></span></h4>
+            </div>
+            <div class="modal-body">
+                <button id="btnDelete" class="btn btn-danger btn-sm pull-right">
+                    <span class="glyphicon glyphicon-remove"></span> Отказване
+                </button>
+                <button id="btnReserve" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                    <span class="glyphicon glyphicon-bookmark"></span> Резервиране
+                </button>
+                @if (Model != null)
+                {
+                    <div>
+                        <form asp-action="Charge" asp-controller="Payment" asp-route-id="@Model.unique_id" method="POST">
+                            <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
+                                    data-key="@Stripe.Value.PublishableKey"
+                                    data-amount="100"
+                                    data-name="Резервационна система за планински туризъм"
+                                    data-description="Хижа @Model.name за цена: @Model.price"
+                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                                    data-locale="en"
+                                    data-address="true"
+                                    data-zip-code="true"
+                                    data-label="Резервирай за @Html.Raw(@Model.price)">
+                            </script>
+                        </form>
+                    </div>
+                }
+                <button value="submit" id="paypal-button"></button>
+                <p id="pDetails"></p>
+            </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media="print" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/gcal.js"></script>
+    <script type="text/javascript" src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var reservations = [];
+            var selectedReservation = null;
+            FetchReservationsAndRenderCalendar();
+
+            function FetchReservationsAndRenderCalendar() {
+                reservations = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/Reservation/GetReservations",
+                    data: { "unique_id" : '@Model.unique_id'},
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            reservations.push({
+                                reservation_id: v.reservation_id,
+                                dt: v.dt,
+                                title: v.chalet_name,
+                                start: v.dt_from != null ? moment(v.dt_from) : null,
+                                end: v.dt_to != null ? moment(v.dt_to) : null,
+                                status: v.status,
+                                amount: v.amount,
+                                currency: v.currency,
+                                color: v.color,
+                                is_full_day: v.is_full_day
+                            })
+                        })
+                        console.log(reservations);
+                        GenerateCalendar(reservations);
+                    },
+                    error: function (error) {
+                        $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })
+            }
+            // End of function FetchReservationsAndRenderCalendar() {
+
+            function GenerateCalendar(reservations) {
+                $('#calendar').fullCalendar("destroy");
+                $('#calendar').fullCalendar({
+                    contentHeight: 650,
+                    defaultDate: new Date(),
+                    themeSystem: 'bootstrap3',
+                    timeFormat: 'h(:mm)',
+                    firstDay: 1,
+                    businessHours: true,
+                    navLinks: true,
+                    customButtons: {
+                        myPrintButton: {
+                            text: 'print',
+                            click: function () {
+                                window.print();
+                            }
+                        }
+                    },
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda myPrintButton'
+                    },
+                    footer: {
+                        left: 'prevYear',
+                        right: 'nextYear'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    googleCalendarApiKey: 'AIzaSyD3sFl3f55EC4pS2eGvIj8Hx41GlGbeBLI',
+                    eventSources: [
+                        reservations,
+                        {
+                            googleCalendarId: 'en.bulgarian#holiday@group.v.calendar.google.com',
+                            className: 'gcalevent',
+                            color: 'brown',
+                            'googleCalendar': 'true'
+                        }
+                    ],
+                    weekNumbers: true,
+                    eventClick: function (calTask, jsEvent, view) {
+                        selectedReservation = calTask;
+
+                        if (jsEvent.currentTarget.href) {
+                            window.open(jsEvent.currentTarget.href, 'newwindow', 'width=800,height=700');
+                            return false;
+                        }
+
+                        $('#myModel #reservationChaletName').text(calTask.title);
+
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount));
+                        $description.append($('<p/>').html('<b>Валута: </b>' + calTask.currency));
+                        $description.append($('<p/>').html('<b>Начална дата: </b>' + calTask.start.format("DD-MMM-YYYY")));
+                        if (calTask.end != null) {
+                            $description.append($('<p/>').html('<b>Крайна дата: </b>' + calTask.end.format("DD-MMM-YYYY")));
+                        }
+                        else {
+                            $description.append($('<p/>').html('<b>Само за един ден. </b>'));
+                        }
+
+                        $('#myModel #pDetails').empty().html($description);
+                        $('#myModel').modal();
+                    },
+                    selectable: true,
+                    select: function (start, dt_to) {
+                        selectedReservation = {
+                            reservation_id: 0,
+                            title: '',
+                            start: start,
+                            dt_to: dt_to,
+                            status: '',
+                            amount: 0,
+                            currency: '',
+                            color: '',
+                            is_full_day: false
+                        };
+                        //openAddEditForm();
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    editable: true,
+                    eventDrop: function (event) {
+                        var data = {
+                            reservation_id: event.reservation_id,
+                            title: event.title,
+                            start: event.start.format('DD/MM/YYYY'),
+                            end: event.end != null ? event.end.format('DD/MM/YYYY') : null,
+                            status: event.status,
+                            amount: event.amount,
+                            currency: event.currency,
+                            color: event.color,
+                            is_full_day: event.is_full_day
+                        };
+                        //SaveTask(data);
+                    }
+                })
+            }
+            // End of function GenerateCalendar(reservations) {
+
+             paypal.Button.render({
+                env: 'sandbox', //'production',
+                commit: true, // Show a 'Pay Now' button
+                payment: function () {
+                    return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {
+                        return data.id;
+                    });
+                },
+                onAuthorize: function (data) {
+                    return paypal.request.post(EXECUTE_PAYMENT_URL, {
+                        paymentID: data.paymentID,
+                        payerID: data.payerID
+                    }).then(function () {
+                        window.location.href = 'https://localhost:44385/Payment/Success'
+                    });
+                }
+            }, '#paypal-button');
+        })
+        // End of $(document).ready(function () {
+
+    </script>
+}

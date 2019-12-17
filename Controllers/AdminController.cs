@@ -18,6 +18,7 @@ namespace MountainTourismBookingSystem.Controllers
         {
             _dbContext = dbContext;
         }
+
         public IActionResult Index()
         {
             return View();

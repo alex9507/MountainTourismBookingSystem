@@ -18,5 +18,6 @@ namespace MountainTourismBookingSystem.Data
         public DbSet<RegionModel> Region { get; set; }
         public DbSet<ChaletTypeModel> ChaletType { get; set; }
         public DbSet<ChaletModel> Chalet { get; set; }
+        public DbSet<ReservationModel> Reservation { get; set; }
     }
 }

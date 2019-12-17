@@ -119,32 +119,11 @@ namespace MountainTourismBookingSystem.Controllers
 
             var model = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
 
-            if (model == null)
-            {
+            if (model == null) {
                 return View("Index", "Home");
             }
 
             return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult Processing(string stripeToken, string stripeEmail)
-        {
-            Dictionary<string, string> Metadata = new Dictionary<string, string>();
-            Metadata.Add("Product", "RubberDuck");
-            Metadata.Add("Quantity", "10");
-            var options = new ChargeCreateOptions
-            {
-                Amount = amount,
-                Currency = "EUR",
-                Description = "Buying 10 rubber ducks",
-                Source = stripeToken,
-                ReceiptEmail = stripeEmail,
-                Metadata = Metadata
-            };
-            var service = new ChargeService();
-            Charge charge = service.Create(options);
-            return View();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MountainTourismBookingSystem.Models
     {
         [Key]
         [Required]
-        public long? challet_id { get; set; }
+        public long? chalet_id { get; set; }
 
         [Required]
         public DateTime dt { get; set; }
