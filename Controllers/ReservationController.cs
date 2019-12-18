@@ -47,6 +47,7 @@ namespace MountainTourismBookingSystem.Controllers
                                     status = r.status,
                                     amount = r.amount,
                                     currency = r.currency,
+                                    people_count = r.people_count,
                                     color = r.color,
                                     is_full_day = r.is_full_day
                                 }).ToList();

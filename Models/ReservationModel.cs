@@ -34,6 +34,8 @@ namespace MountainTourismBookingSystem.Models
 
         [MaxLength(3)]
         public string currency { get; set; }
+        [Required]
+        public int people_count { get; set; }
 
         [MaxLength(100)]
         public string balance_transaction_id { get; set; }

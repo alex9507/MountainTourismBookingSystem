@@ -16,22 +16,22 @@
 
 <div id="msgInfo" class="isa_info" style="display: none;">
     <i class="fa fa-info-circle"></i>
-    <strong>Information!</strong>
+    <strong>Информация!</strong>
     <strong id="msgInfoText"></strong>
 </div>
 <div id="msgSuccess" class="isa_success" style="display: none;">
     <i class="fa fa-check"></i>
-    <strong>Success!</strong>
+    <strong>Успех!</strong>
     <strong id="msgSuccessText"></strong>
 </div>
 <div id="msgWarn" class="isa_warning" style="display: none;">
     <i class="fa fa-warning"></i>
-    <strong>Warning!</strong>
+    <strong>Предупреждение!</strong>
     <strong id="msgWarnText"></strong>
 </div>
 <div id="msgError" class="isa_error" style="display: none;">
     <i class="fa fa-times-circle"></i>
-    <strong>Error!</strong>
+    <strong>Грешка!</strong>
     <strong id="msgErrorText"></strong>
 </div>
 
@@ -46,32 +46,82 @@
                 <button id="btnDelete" class="btn btn-danger btn-sm pull-right">
                     <span class="glyphicon glyphicon-remove"></span> Отказване
                 </button>
-                <button id="btnReserve" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                    <span class="glyphicon glyphicon-bookmark"></span> Резервиране
-                </button>
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Затваряне</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modelReserve" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Запазване на Обект за дати: </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Брой хора</label>
+                    <input type="number" id="txtPersonCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
+                </div>
+                <div class="form-group">
+                    <label>Сума</label>
+                    <input type="number" id="txtAmount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1')" disabled />
+                </div>
+                <div class="form-group">
+                    <label>Възложител</label>
+                    <input type="text" id="txtCurrency" class="form-control" maxlength="50" disabled />
+                </div>
+                <div class="form-group">
+                    <label>Начална дата</label>
+                    <div class="input-group date" id="dpFrom">
+                        <input type="text" id="txtStart" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="chIsFullDay" checked="checked" />Резервация за един ден</label>
+                    </div>
+                </div>
+                <div class="form-group" id="divToDate" style="display:none">
+                    <label>Крайна дата</label>
+                    <div class="input-group date" id="dpTo">
+                        <input type="text" id="txtEnd" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
                 @if (Model != null)
                 {
                     <div>
                         <form asp-action="Charge" asp-controller="Payment" asp-route-id="@Model.unique_id" method="POST">
                             <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
                                     data-key="@Stripe.Value.PublishableKey"
-                                    data-amount="100"
+                                    data-amount="@Model.price * 100 "
                                     data-name="Резервационна система за планински туризъм"
-                                    data-description="Хижа @Model.name за цена: @Model.price"
+                                    data-description="Хижа @Model.name за цена: @Model.price лева"
                                     data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
                                     data-locale="en"
-                                    data-address="true"
+                                    data-billing-address="true"
                                     data-zip-code="true"
-                                    data-label="Резервирай за @Html.Raw(@Model.price)">
+                                    data-label="Плащане с карта">
                             </script>
                         </form>
                     </div>
+
+                    <button value="submit" id="paypal-button" class="center-block"></button>
+                    <p id="pDetails"></p>
                 }
-                <button value="submit" id="paypal-button"></button>
-                <p id="pDetails"></p>
             </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
             </div>
         </div>
     </div>
@@ -82,10 +132,11 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
 @section Scripts {
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/gcal.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/locale/bg.js"></script>
     <script type="text/javascript" src="https://www.paypalobjects.com/api/checkout.js"></script>
 
     <script>
@@ -110,12 +161,13 @@
                                 end: v.dt_to != null ? moment(v.dt_to) : null,
                                 status: v.status,
                                 amount: v.amount,
+                                people_count: v.people_count,
                                 currency: v.currency,
                                 color: v.color,
                                 is_full_day: v.is_full_day
                             })
                         })
-                        console.log(reservations);
+
                         GenerateCalendar(reservations);
                     },
                     error: function (error) {
@@ -138,7 +190,7 @@
                     navLinks: true,
                     customButtons: {
                         myPrintButton: {
-                            text: 'print',
+                            text: ' принтирай',
                             click: function () {
                                 window.print();
                             }
@@ -147,7 +199,7 @@
                     header: {
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'month,basicWeek,basicDay,agenda myPrintButton'
+                        right: 'month, basicWeek, basicDay, agenda myPrintButton'
                     },
                     footer: {
                         left: 'prevYear',
@@ -179,9 +231,10 @@
                         var $description = $('<div/>');
                         $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount));
                         $description.append($('<p/>').html('<b>Валута: </b>' + calTask.currency));
-                        $description.append($('<p/>').html('<b>Начална дата: </b>' + calTask.start.format("DD-MMM-YYYY")));
+                        $description.append($('<p/>').html('<b>Брой хора: </b>' + calTask.people_count));
+                        $description.append($('<p/>').html('<b>Начална дата: </b>' + calTask.start.format("YYYY-MMM-DD")));
                         if (calTask.end != null) {
-                            $description.append($('<p/>').html('<b>Крайна дата: </b>' + calTask.end.format("DD-MMM-YYYY")));
+                            $description.append($('<p/>').html('<b>Крайна дата: </b>' + calTask.end.format("YYYY-MMM-DD")));
                         }
                         else {
                             $description.append($('<p/>').html('<b>Само за един ден. </b>'));
@@ -191,19 +244,21 @@
                         $('#myModel').modal();
                     },
                     selectable: true,
-                    select: function (start, dt_to) {
+                    select: function (start, end) {
                         selectedReservation = {
                             reservation_id: 0,
                             title: '',
                             start: start,
-                            dt_to: dt_to,
+                            end: end,
                             status: '',
                             amount: 0,
-                            currency: '',
+                            currency: 'BGN',
+                            people_count: 0,
                             color: '',
                             is_full_day: false
                         };
-                        //openAddEditForm();
+
+                        openReservationForm(selectedReservation);
                         $('#calendar').fullCalendar('unselect');
                     },
                     editable: true,
@@ -211,11 +266,12 @@
                         var data = {
                             reservation_id: event.reservation_id,
                             title: event.title,
-                            start: event.start.format('DD/MM/YYYY'),
-                            end: event.end != null ? event.end.format('DD/MM/YYYY') : null,
+                            start: event.start.format('YYYY-MM-DD'),
+                            end: event.end != null ? event.end.format('YYYY-MM-DD') : null,
                             status: event.status,
                             amount: event.amount,
                             currency: event.currency,
+                            people_count: event.people_count,
                             color: event.color,
                             is_full_day: event.is_full_day
                         };
@@ -225,7 +281,7 @@
             }
             // End of function GenerateCalendar(reservations) {
 
-             paypal.Button.render({
+            paypal.Button.render({
                 env: 'sandbox', //'production',
                 commit: true, // Show a 'Pay Now' button
                 payment: function () {
@@ -242,8 +298,68 @@
                     });
                 }
             }, '#paypal-button');
+
+            $('#dpFrom,#dpTo').datetimepicker({
+                format: 'YYYY-MM-DD',
+            });
+            // End of $('#dpFrom,#dpTo').datetimepicker({
+
+            $("#dpFrom,#dpTo").on("dp.change", function (e) {
+                calculateAmount();
+            });
+
+            $('#chIsFullDay').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#divToDate').hide();
+                   }
+                else {
+                    $('#divToDate').show();
+                }
+            });
+            // End of $('#chIsFullDay').change(function () {
         })
         // End of $(document).ready(function () {
+
+        function openReservationForm(selectedReservation) {
+            if (selectedReservation != null) {
+                $('#txtPersonText').val(selectedReservation.people_count);
+                $('#txtStart').val(selectedReservation.start.format('YYYY-MM-DD'));
+                $('#chIsFullDay').prop("checked", selectedReservation.is_full_day || false);
+                $('#chIsFullDay').change();
+                $('#txtEnd').val(selectedReservation.end != null ? selectedReservation.end.format('YYYY-MM-DD') : '');
+                $('#ddThemeColor').val(selectedReservation.color);
+            }
+            $('#myModel').modal('hide');
+            $('#modelReserve').modal();
+        }
+        // End of function openReservationForm() {
+
+        $('#txtStart, #txtEnd').change(function() {
+            calculateAmount();
+        });
+        // End of $('#txtStart, #txtEnd').change(function() {
+
+        function calculateAmount() {
+            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+            var formatStartDate = new Date($('#txtStart').val()).toLocaleDateString("en-US").trim();
+            var formatEndDate = new Date($('#txtEnd').val()).toLocaleDateString("en-US").trim(); 
+
+            var startDate = new Date(formatStartDate);
+            var endDate = new Date(formatEndDate);
+
+            if (startDate > endDate) {
+                $('#msgInfoText').empty().append("Невалидна Крайна дата.");
+                $('#msgInfo').fadeIn(800).delay(3000).fadeOut(800);
+                return;
+            }
+
+            var timeDiff = Math.abs(endDate - startDate);
+            var diffDays = Math.ceil(timeDiff / _MS_PER_DAY); 
+
+            $('#txtAmount').val($('#txtPersonCount').val() * @Model.price * diffDays);            
+        }
+        // End of function calculateAmount() {
 
     </script>
 }
