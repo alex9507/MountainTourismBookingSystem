@@ -35,7 +35,7 @@
     <strong id="msgErrorText"></strong>
 </div>
 
-<div id="myModel" class="modal fade" role="dialog">
+<div id="myModel" class="modal fade" role="dialog" style="top: 10%;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -55,7 +55,7 @@
     </div>
 </div>
 
-<div id="modelReserve" class="modal fade" role="dialog">
+<div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="form-group">
                     <label>Валута</label>
-                    <input type="text" id="txtCurrency" class="form-control" maxlength="3"  value="BGN" disabled />
+                    <input type="text" id="txtCurrency" class="form-control" maxlength="3" value="BGN" disabled />
                 </div>
                 <div class="form-group">
                     <label>Начална дата</label>
@@ -100,26 +100,13 @@
                 </div>
                 @if (Model != null)
                 {
-                    <div>
-                        <form asp-action="Charge" asp-controller="Payment" asp-route-id="@Model.unique_id" method="POST">
-                            <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
-                                    data-key="@Stripe.Value.PublishableKey"
-                                    data-amount="@Model.price * 100 "
-                                    data-name="Резервационна система за планински туризъм"
-                                    data-description="Хижа @Model.name за цена: @Model.price лева"
-                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                                    data-locale="en"
-                                    data-billing-address="true"
-                                    data-zip-code="true"
-                                    data-label="Плащане с карта">
-                            </script>
-                        </form>
+                    <div id="modelPay" class="floated">
                     </div>
 
-                    <button value="submit" id="paypal-button" class="center-block"></button>
-                    <p id="pDetails"></p>
+                    <button value="submit" id="paypal-button" class="modal-content"> </button>
                 }
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
             </div>
@@ -345,7 +332,7 @@
             const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
             var formatStartDate = new Date($('#txtStart').val()).toLocaleDateString("en-US").trim();
-            var formatEndDate = new Date($('#txtEnd').val()).toLocaleDateString("en-US").trim(); 
+            var formatEndDate = new Date($('#txtEnd').val()).toLocaleDateString("en-US").trim();
 
             var startDate = new Date(formatStartDate);
             var endDate = new Date(formatEndDate);
@@ -365,9 +352,33 @@
                 var diffDays = Math.ceil(timeDiff / _MS_PER_DAY);
                 $('#txtAmount').val($('#txtPersonCount').val() * @Model.price * diffDays);
             }
+            generateStripeModel();
         }
         // End of function calculateAmount() {
         // $('.stripe-button').attr('data-amount', $('#txtAmount').val() * 100);
         // $('.stripe-button').attr('data-description', ("Хижа @Model.name за цена: " + ($('#txtAmount').val() * 100) + " лева"));
+
+        function generateStripeModel() {
+            var generate_stripe = "";
+            if ($('#txtAmount').val() != "" && $('#txtPersonCount').val() != "") {
+                generate_stripe = " <div> "
+                    + "   <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' method='POST'> "
+                    + "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
+                    + "           data-key='@Stripe.Value.PublishableKey' "
+                    + "           data-amount='" + $('#txtAmount').val() + " * 100 ' "
+                    + "           data-name='Резервационна система за планински туризъм' "
+                    + "           data-description='Хижа @Model.name за цена: " + $('#txtAmount').val() + " лева' "
+                    + "           data-image='https://stripe.com/img/documentation/checkout/marketplace.png' "
+                    + "           data-locale='en' "
+                    + "           data-billing-address='true' "
+                    + "           data-zip-code='true' "
+                    + "           data-label='Плащане с карта'> "
+                    + "       </ " + "script> ";
+                    + "   </ " + "form> "
+                    + " </ " + "div> ";
+            }
+
+            $("#modelPay").html(generate_stripe);
+        }
     </script>
 }

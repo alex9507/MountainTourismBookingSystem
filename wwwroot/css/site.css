@@ -122,3 +122,8 @@ body {
     font-size: 2em;
     vertical-align: middle;
 }
+
+.floated {
+    float: left;
+    margin-right: 15px;
+}
