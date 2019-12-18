@@ -186,7 +186,7 @@
                     header: {
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'month, basicWeek, basicDay, agenda myPrintButton'
+                        right: 'month,basicWeek,basicDay, agenda myPrintButton'
                     },
                     footer: {
                         left: 'prevYear',
@@ -306,6 +306,7 @@
                 }
             });
             // End of $('#chIsFullDay').change(function () {
+
         })
         // End of $(document).ready(function () {
 
@@ -355,8 +356,6 @@
             generateStripeModel();
         }
         // End of function calculateAmount() {
-        // $('.stripe-button').attr('data-amount', $('#txtAmount').val() * 100);
-        // $('.stripe-button').attr('data-description', ("Хижа @Model.name за цена: " + ($('#txtAmount').val() * 100) + " лева"));
 
         function generateStripeModel() {
             var generate_stripe = "";
@@ -380,5 +379,7 @@
 
             $("#modelPay").html(generate_stripe);
         }
+        // End of function generateStripeModel() {
+
     </script>
 }
