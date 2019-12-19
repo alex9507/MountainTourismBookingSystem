@@ -55,7 +55,7 @@
     </div>
 </div>
 
-<div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;">
+<div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -98,13 +98,14 @@
                         </span>
                     </div>
                 </div>
-                @if (Model != null)
-                {
-                    <div id="modelPay" class="floated">
-                    </div>
+
+                <div class="floated">
+                    <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' method='POST' id="modelPay">
+
+                    </form>
+                </div>
 
                     <button value="submit" id="paypal-button" class="modal-content"> </button>
-                }
             </div>
 
             <div class="modal-footer">
@@ -289,7 +290,7 @@
             $('#dpFrom,#dpTo').datetimepicker({
                 format: 'YYYY-MM-DD',
             });
-            // End of $('#dpFrom,#dpTo').datetimepicker({
+            // End of paypal.Button.render({
 
             $("#dpFrom,#dpTo").on("dp.change", function (e) {
                 calculateAmount();
@@ -312,7 +313,7 @@
 
         function openReservationForm(selectedReservation) {
             if (selectedReservation != null) {
-                $('#txtPersonText').val(selectedReservation.people_count);
+                $('#txtPersonCount').val(selectedReservation.people_count);
                 $('#txtStart').val(selectedReservation.start.format('YYYY-MM-DD'));
                 $('#chIsFullDay').prop("checked", selectedReservation.is_full_day || false);
                 $('#chIsFullDay').change();
@@ -351,7 +352,7 @@
             {
                 var timeDiff = Math.abs(endDate - startDate);
                 var diffDays = Math.ceil(timeDiff / _MS_PER_DAY);
-                $('#txtAmount').val($('#txtPersonCount').val() * @Model.price * diffDays);
+                $('#txtAmount').val($('#txtPersonCount').val() * @Model.price * diffDays * 100);
             }
             generateStripeModel();
         }
@@ -360,23 +361,21 @@
         function generateStripeModel() {
             var generate_stripe = "";
             if ($('#txtAmount').val() != "" && $('#txtPersonCount').val() != "") {
-                generate_stripe = " <div> "
-                    + "   <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' method='POST'> "
-                    + "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
+                generate_stripe =
+                    "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
                     + "           data-key='@Stripe.Value.PublishableKey' "
-                    + "           data-amount='" + $('#txtAmount').val() + " * 100 ' "
+                    + "           data-amount='" + $('#txtAmount').val() + "' "
                     + "           data-name='Резервационна система за планински туризъм' "
                     + "           data-description='Хижа @Model.name за цена: " + $('#txtAmount').val() + " лева' "
                     + "           data-image='https://stripe.com/img/documentation/checkout/marketplace.png' "
-                    + "           data-locale='en' "
+                    + "           data-locale='auto' "
                     + "           data-billing-address='true' "
-                    + "           data-zip-code='true' "
+                    + "           data-zip-code='true'"
                     + "           data-label='Плащане с карта'> "
-                    + "       </ " + "script> ";
-                    + "   </ " + "form> "
-                    + " </ " + "div> ";
+                    + "       </" + "script> ";
             }
-
+            //+ "   <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-count='" + $('#txtPersonCount').val() + "'"
+            //        + "         asp-route-from='" + $('#txtStart').val() + "' asp-route-to='" + $('#txtEnd').val() + "' method='POST'> "
             $("#modelPay").html(generate_stripe);
         }
         // End of function generateStripeModel() {

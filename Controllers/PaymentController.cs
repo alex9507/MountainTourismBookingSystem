@@ -30,6 +30,7 @@ namespace MountainTourismBookingSystem.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult Charge(string stripeEmail, string stripeToken, Guid id)
         {
             var vChalet = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
