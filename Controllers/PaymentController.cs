@@ -49,7 +49,7 @@ namespace MountainTourismBookingSystem.Controllers
             var customers = new CustomerService();
             var charges = new ChargeService();
 
-            var customer = customers.Create(new CustomerCreateOptions
+            var customer = customers.Create(new CustomerCreateOptions 
             {
                 Email = stripeEmail,
                 Source = stripeToken
@@ -98,8 +98,7 @@ namespace MountainTourismBookingSystem.Controllers
                 //return RedirectToAction("Success");
                 return Json(new { success = true });
             }
-            else
-            {
+            else {
                 return RedirectToAction("Cancel");
             }
         }
@@ -122,7 +121,32 @@ namespace MountainTourismBookingSystem.Controllers
 
             return Json(new { success = true });
         }
-        
+
+        [HttpPost]
+        public IActionResult ChangeData(ReservationModel data)
+        {
+            if (data.reservation_id > 0)
+            {
+                var v = _dbContext.Reservation.Where(x => x.reservation_id == data.reservation_id).FirstOrDefault();
+                if (v != null)
+                {
+                    v.dt_from = data.dt_from;
+                    v.dt_to = data.dt_to;
+                    v.is_full_day = data.is_full_day;
+                }
+                else {
+                    return Json(new { success = true });
+                }
+            }
+            else {
+                return Json(new { success = true });
+            }
+
+            _dbContext.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
 
         // [HttpPost]
         // public IActionResult CreatePayment()

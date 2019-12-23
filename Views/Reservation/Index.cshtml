@@ -223,7 +223,7 @@
                         $('#myModel #reservationChaletName').text(calTask.title);
 
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount));
+                        $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount /100 ));
                         $description.append($('<p/>').html('<b>Валута: </b>' + calTask.currency));
                         $description.append($('<p/>').html('<b>Брой хора: </b>' + calTask.people_count));
                         $description.append($('<p/>').html('<b>Начална дата: </b>' + calTask.start.format("YYYY-MMM-DD")));
@@ -259,17 +259,12 @@
                     eventDrop: function (event) {
                         var data = {
                             reservation_id: event.reservation_id,
-                            title: event.title,
-                            start: event.start.format('YYYY-MM-DD'),
-                            end: event.end != null ? event.end.format('YYYY-MM-DD') : null,
-                            status: event.status,
-                            amount: event.amount,
-                            currency: event.currency,
-                            people_count: event.people_count,
-                            color: event.color,
+                            dt_from: event.start.format('YYYY-MM-DD'),
+                            dt_to: event.end != null ? event.end.format('YYYY-MM-DD') : null,
                             is_full_day: event.is_full_day
                         };
-                        //SaveTask(data);
+
+                        changeData(data)
                     }
                 })
             }
@@ -366,7 +361,8 @@
 
         function generateStripeModel() {
             var generate_stripe = "";
-            if ($('#txtAmount').val() != "" && $('#txtPeopleCount').val() != "") {
+            if ($('#txtAmount').val() != "" && $('#txtAmount').val() != "0"
+                && $('#txtPeopleCount').val() != "") {
                 generate_stripe =
                     "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
                     + "           data-key='@Stripe.Value.PublishableKey' "
@@ -409,6 +405,19 @@
                 })
         }
         // End of function postDataSave() {
-        
+
+        function changeData(data) {
+            $.ajax({
+                    type: "POST",
+                    url: "/Payment/ChangeData",
+                    data: data,
+                    error: function () {
+                        $('#msgErrorText').empty().append("Има проблем при запазването на информацията за плащането.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })
+        }
+        // End of function changeData(data) {
+
     </script>
 }
