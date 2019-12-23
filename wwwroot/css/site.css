@@ -127,3 +127,32 @@ body {
     float: left;
     margin-right: 15px;
 }
+
+.easyPaginateNav a:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.easyPaginateNav a:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.easyPaginateNav a {
+    margin: 0 4px;
+    padding: 5px;
+    font-size: 22px;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    color: white;
+    background-color: #337ab7;
+    text-align: center; 
+}
+
+.easyPaginateNav a:hover:not(.active) {
+    background-color: #286090;
+}
+
+.easyPaginateNav {
+    text-align: center;
+}

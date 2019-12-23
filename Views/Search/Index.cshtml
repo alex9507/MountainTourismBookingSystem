@@ -27,7 +27,7 @@
 <div class="panel panel-heading bootstrap-basic">
     <BR>
     <div class="row" id="search">
-        <form id="search-form" action="" method="POST" enctype="multipart/form-data" >
+        <form id="search-form" action="" method="POST" enctype="multipart/form-data">
             <div class="form-group col-xs-12">
                 <input class="form-control" type="text" placeholder="Search" />
             </div>
@@ -59,7 +59,9 @@
 
 <div class="row" id="products"></div>
 
-@section Scripts {    
+@section Scripts {
+    <script src="~/js/jquery.easyPaginate.js"></script>
+
     <script>
         $(document).ready(function () {
             var chalets = [];
@@ -91,6 +93,10 @@
                         })
 
                         GenerateChalets(chalets);
+                        $('#products').easyPaginate({
+                            paginateElement: 'div.chalet',
+                            elementsPerPage: 6
+                        });
                     },
                     error: function (error) {
                         $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
