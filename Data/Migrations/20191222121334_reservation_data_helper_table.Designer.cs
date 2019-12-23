@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MountainTourismBookingSystem.Data;
 
 namespace MountainTourismBookingSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191222121334_reservation_data_helper_table")]
+    partial class reservation_data_helper_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -316,8 +318,6 @@ namespace MountainTourismBookingSystem.Data.Migrations
                     b.Property<bool>("is_full_day");
 
                     b.Property<int>("people_count");
-
-                    b.Property<Guid>("unique_id");
 
                     b.HasKey("reservation_helper_id");
 

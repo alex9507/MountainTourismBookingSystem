@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MountainTourismBookingSystem.Data;
+using MountainTourismBookingSystem.Models;
 using PaypalExpressCheckout.BusinessLogic.Interfaces;
 using Stripe;
 
@@ -31,9 +32,19 @@ namespace MountainTourismBookingSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Charge(string stripeEmail, string stripeToken, Guid id)
+        public IActionResult Charge(string stripeEmail, string stripeToken, Guid id, Guid dataGuid)
         {
             var vChalet = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+
+            if (vChalet == null) {
+                return RedirectToAction("Cancel");
+            }
+
+            var vHelperData = _dbContext.ReservationDataHelper.Where(x => x.unique_id == dataGuid).LastOrDefault();
+
+            if (vHelperData == null) {
+                return RedirectToAction("Cancel");
+            }
 
             var customers = new CustomerService();
             var charges = new ChargeService();
@@ -53,15 +64,39 @@ namespace MountainTourismBookingSystem.Controllers
                 ReceiptEmail = stripeEmail,
                 Metadata = new Dictionary<string, string>()
                 {
-                    { "OrderId", "111" },
-                    { "Postcode", "LEE111"},
+                    {"chalet_id",       vChalet.chalet_id.ToString()},
+                    {"dt_from",         vHelperData.dt_from.ToString()},
+                    {"dt_to",           vHelperData.dt_to.ToString()},
+                    {"is_full_day",     vHelperData.is_full_day.ToString()},
+                    {"amount",          vHelperData.amount.ToString()},
+                    {"currency",        vHelperData.currency},
+                    {"people_count",    vHelperData.people_count.ToString()},
+                    {"color",           vHelperData.color} 
                 }
             });
 
             if (charge.Status == "succeeded")
             {
-                string BalanceTransactionId = charge.BalanceTransactionId;
-                return RedirectToAction("Success");
+                var vReservation = new ReservationModel() 
+                {
+                    dt                      = DateTime.Now,
+                    chalet_id               = vChalet.chalet_id,
+                    dt_from                 = vHelperData.dt_from,
+                    dt_to                   = vHelperData.dt_to,
+                    is_full_day             = vHelperData.is_full_day,
+                    status                  = charge.Status,
+                    amount                  = vHelperData.amount,
+                    currency                = vHelperData.currency,
+                    people_count            = vHelperData.people_count,
+                    balance_transaction_id  = charge.BalanceTransactionId,
+                    color                   = vHelperData.color
+                };
+
+                _dbContext.Reservation.Add(vReservation);
+                _dbContext.SaveChanges();
+
+                //return RedirectToAction("Success");
+                return Json(new { success = true });
             }
             else
             {
@@ -78,6 +113,16 @@ namespace MountainTourismBookingSystem.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult SaveData(ReservationDataHelperModel data)
+        {
+            _dbContext.ReservationDataHelper.Add(data);
+            _dbContext.SaveChanges();
+
+            return Json(new { success = true });
+        }
+        
 
         // [HttpPost]
         // public IActionResult CreatePayment()

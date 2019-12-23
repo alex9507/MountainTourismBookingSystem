@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MountainTourismBookingSystem.Models
 {
-    public class ReservationModel
+    public class ReservationDataHelperModel
     {
         [Key]
         [Required]
-        public long? reservation_id { get; set; }
+        public long? reservation_helper_id { get; set; }
 
         [Required]
-        public DateTime dt { get; set; }
+        public Guid unique_id { get; set; }
 
         [Required]
         public long? chalet_id { get; set; }
@@ -25,24 +25,16 @@ namespace MountainTourismBookingSystem.Models
 
         public bool is_full_day { get; set; }
 
-        [MaxLength(50)]
-        public string status { get; set; }
-
         [Required]
         public double? amount { get; set; }
 
         [MaxLength(3)]
         public string currency { get; set; }
+
         [Required]
         public int people_count { get; set; }
 
-        [MaxLength(100)]
-        public string balance_transaction_id { get; set; }
-
         [MaxLength(50)]
         public string color { get; set; }
-
-        [Required]
-        public Guid user_id { get; set; }
     }
 }

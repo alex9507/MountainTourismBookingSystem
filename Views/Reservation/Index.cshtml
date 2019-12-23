@@ -4,11 +4,9 @@
     ViewData["Title"] = "Календар за Резервации";
 }
 @model ChaletModel;
+@{ Guid dataGuid = Guid.NewGuid();;}
 
-<BR>
-<BR>
-<BR>
-<BR>
+<BR><BR><BR><BR>
 
 <div style="background-color:whitesmoke">
     <div id="calendar"></div>
@@ -65,7 +63,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Брой хора</label>
-                    <input type="number" id="txtPersonCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
+                    <input type="number" id="txtPeopleCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
                 </div>
                 <div class="form-group">
                     <label>Сума</label>
@@ -98,10 +96,18 @@
                         </span>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Цвят на темата</label>
+                    <select id="divColor" class="form-control">
+                        <option value="green">Зелен</option>
+                        <option value="red">Червен</option>
+                        <option value="blue">Син</option>
+                        <option value="purple">Лилав</option>
+                    </select>
+                </div>
 
                 <div class="floated">
-                    <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' method='POST' id="modelPay">
-
+                    <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-dataGuid="@dataGuid" method='POST' id="modelPay" onclick="postDataSave()">
                     </form>
                 </div>
 
@@ -242,7 +248,7 @@
                             amount: 0,
                             currency: '',
                             people_count: 0,
-                            color: '',
+                            color: 'green',
                             is_full_day: false
                         };
 
@@ -286,11 +292,12 @@
                     });
                 }
             }, '#paypal-button');
+            // End of paypal.Button.render({
 
             $('#dpFrom,#dpTo').datetimepicker({
                 format: 'YYYY-MM-DD',
             });
-            // End of paypal.Button.render({
+            // End of $('#dpFrom,#dpTo').datetimepicker({
 
             $("#dpFrom,#dpTo").on("dp.change", function (e) {
                 calculateAmount();
@@ -306,14 +313,13 @@
                     $('#divToDate').show();
                 }
             });
-            // End of $('#chIsFullDay').change(function () {
-
+            // End of $('#chIsFullDay').change(function () {      
         })
         // End of $(document).ready(function () {
 
         function openReservationForm(selectedReservation) {
             if (selectedReservation != null) {
-                $('#txtPersonCount').val(selectedReservation.people_count);
+                $('#txtPeopleCount').val(selectedReservation.people_count);
                 $('#txtStart').val(selectedReservation.start.format('YYYY-MM-DD'));
                 $('#chIsFullDay').prop("checked", selectedReservation.is_full_day || false);
                 $('#chIsFullDay').change();
@@ -346,13 +352,13 @@
             }
 
             if ($("#chIsFullDay").is(':checked')) {
-                $('#txtAmount').val($('#txtPersonCount').val() * @Model.price);
+                $('#txtAmount').val($('#txtPeopleCount').val() * @Model.price);
             }
             else
             {
                 var timeDiff = Math.abs(endDate - startDate);
                 var diffDays = Math.ceil(timeDiff / _MS_PER_DAY);
-                $('#txtAmount').val($('#txtPersonCount').val() * @Model.price * diffDays * 100);
+                $('#txtAmount').val($('#txtPeopleCount').val() * @Model.price * diffDays);
             }
             generateStripeModel();
         }
@@ -360,11 +366,11 @@
 
         function generateStripeModel() {
             var generate_stripe = "";
-            if ($('#txtAmount').val() != "" && $('#txtPersonCount').val() != "") {
+            if ($('#txtAmount').val() != "" && $('#txtPeopleCount').val() != "") {
                 generate_stripe =
                     "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
                     + "           data-key='@Stripe.Value.PublishableKey' "
-                    + "           data-amount='" + $('#txtAmount').val() + "' "
+                    + "           data-amount='" + $('#txtAmount').val() * 100 + "' "
                     + "           data-name='Резервационна система за планински туризъм' "
                     + "           data-description='Хижа @Model.name за цена: " + $('#txtAmount').val() + " лева' "
                     + "           data-image='https://stripe.com/img/documentation/checkout/marketplace.png' "
@@ -374,11 +380,35 @@
                     + "           data-label='Плащане с карта'> "
                     + "       </" + "script> ";
             }
-            //+ "   <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-count='" + $('#txtPersonCount').val() + "'"
-            //        + "         asp-route-from='" + $('#txtStart').val() + "' asp-route-to='" + $('#txtEnd').val() + "' method='POST'> "
+
             $("#modelPay").html(generate_stripe);
         }
         // End of function generateStripeModel() {
 
+        function postDataSave() {
+            var data = {
+                chalet_id: @Model.chalet_id,
+                unique_id: '@dataGuid',
+                dt_from: $('#txtStart').val(),
+                dt_to: $('#chIsFullDay').is(':checked') ? null : $('#txtEnd').val(),
+                is_full_day: $('#chIsFullDay').is(':checked'),
+                amount: $('#txtAmount').val(),
+                currency: $('#txtCurrency').val(),
+                people_count: $('#txtPeopleCount').val(),
+                color: $('#divColor').val()
+            }
+
+            $.ajax({
+                    type: "POST",
+                    url: "/Payment/SaveData",
+                    data: data,
+                    error: function () {
+                        $('#msgErrorText').empty().append("Има проблем при запазването на информацията за плащането.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })
+        }
+        // End of function postDataSave() {
+        
     </script>
 }
