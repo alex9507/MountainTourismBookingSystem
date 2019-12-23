@@ -135,11 +135,11 @@ namespace MountainTourismBookingSystem.Controllers
                     v.is_full_day = data.is_full_day;
                 }
                 else {
-                    return Json(new { success = true });
+                    return Json(new { success = false });
                 }
             }
             else {
-                return Json(new { success = true });
+                return Json(new { success = false });
             }
 
             _dbContext.SaveChanges();
