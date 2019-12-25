@@ -1,93 +1,99 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     ViewData["Title"] = "Index";
 }
 
-<BR>
-<BR>
-<BR>
-<BR>
+@if (SignInManager.IsSignedIn(User))
+{
+    <BR>
+    <BR>
+    <BR>
+    <BR>
 
-<div id="msgInfo" class="isa_info" style="display: none;">
-    <i class="fa fa-info-circle"></i>
-    <strong>Информация!</strong>
-    <strong id="msgInfoText"></strong>
-</div>
-<div id="msgSuccess" class="isa_success" style="display: none;">
-    <i class="fa fa-check"></i>
-    <strong>Успех!</strong>
-    <strong id="msgSuccessText"></strong>
-</div>
-<div id="msgWarn" class="isa_warning" style="display: none;">
-    <i class="fa fa-warning"></i>
-    <strong>Предупреждение!</strong>
-    <strong id="msgWarnText"></strong>
-</div>
-<div id="msgError" class="isa_error" style="display: none;">
-    <i class="fa fa-times-circle"></i>
-    <strong>Грешка!</strong>
-    <strong id="msgErrorText"></strong>
-</div>
-
-<div class="modal-body">
-    <div style="width:100%; margin:0 auto;">
-        <table id="myTableChalets" class="ui celled table">
-            <thead>
-                <tr>
-                    <th>Име</th>
-                    <th>Вид на Обекта</th>
-                    <th>Местност</th>
-                    <th>Планина</th>
-                    <th>Брой легла</th>
-                </tr>
-            </thead>
-        </table>
+    <div id="msgInfo" class="isa_info" style="display: none;">
+        <i class="fa fa-info-circle"></i>
+        <strong>Информация!</strong>
+        <strong id="msgInfoText"></strong>
     </div>
-</div>   
+    <div id="msgSuccess" class="isa_success" style="display: none;">
+        <i class="fa fa-check"></i>
+        <strong>Успех!</strong>
+        <strong id="msgSuccessText"></strong>
+    </div>
+    <div id="msgWarn" class="isa_warning" style="display: none;">
+        <i class="fa fa-warning"></i>
+        <strong>Предупреждение!</strong>
+        <strong id="msgWarnText"></strong>
+    </div>
+    <div id="msgError" class="isa_error" style="display: none;">
+        <i class="fa fa-times-circle"></i>
+        <strong>Грешка!</strong>
+        <strong id="msgErrorText"></strong>
+    </div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet" />
+    <div class="modal-body">
+        <div style="width:100%; margin:0 auto;">
+            <table id="myTableChalets" class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>Име</th>
+                        <th>Вид на Обекта</th>
+                        <th>Местност</th>
+                        <th>Планина</th>
+                        <th>Брой легла</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 
-@section Scripts {
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet" />
 
-    <script>
-        $(document).ready(function () {
-            $('#myTableChalets').DataTable({
-                "processing": true,
-                "serverSide": false,
-                "filter": true,
-                "orderMulti": false,
-                "ajax": {
-                    "url":      "/Admin/GetData",
-                    "type":     "GET",
-                    "datatype": "json",
-                    "dataSrc":  ""
-                },
-                "columns": [
-                    { "data": "c_name",           "name": "c_name",           "autoWidth": true },
-                    { "data": "c_chalet_type",    "name": "c_chalet_type",    "autoWidth": true },
-                    { "data": "c_region_type",    "name": "c_region_type",    "autoWidth": true },
-                    { "data": "c_mountain_type",  "name": "c_mountain_type",  "autoWidth": true },
-                    { "data": "c_beds",           "name": "c_beds",           "autoWidth": true }
-                ],
-                "language": {
-                    "sProcessing":   "Обработка на резултатите...",
-	                "sLengthMenu":   "Показване на _MENU_ резултата",
-	                "sZeroRecords":  "Няма намерени резултати",
-	                "sInfo":         "Показване на резултати от _START_ до _END_ от общо _TOTAL_",
-	                "sInfoEmpty":    "Показване на резултати от 0 до 0 от общо 0",
-	                "sInfoFiltered": "(филтрирани от общо _MAX_ резултата)",
-	                "sSearch":       "Търсене:",
-	                "oPaginate": {
-	                	"sFirst":    "Първа",
-	                	"sPrevious": "Предишна",
-	                	"sNext":     "Следваща",
-	                	"sLast":     "Последна"
-	                }
-                }
+    @section Scripts {
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#myTableChalets').DataTable({
+                    "processing": true,
+                    "serverSide": false,
+                    "filter": true,
+                    "orderMulti": false,
+                    "ajax": {
+                        "url": "/Admin/GetData",
+                        "type": "GET",
+                        "datatype": "json",
+                        "dataSrc": ""
+                    },
+                    "columns": [
+                        { "data": "c_name",             "name":     "c_name",           "autoWidth": true },
+                        { "data": "c_chalet_type",      "name":     "c_chalet_type",    "autoWidth": true },
+                        { "data": "c_region_type",      "name":     "c_region_type",    "autoWidth": true },
+                        { "data": "c_mountain_type",    "name":     "c_mountain_type",  "autoWidth": true },
+                        { "data": "c_beds",             "name":     "c_beds",           "autoWidth": true }
+                    ],
+                    "language": {
+                        "sProcessing": "Обработка на резултатите...",
+                        "sLengthMenu": "Показване на _MENU_ резултата",
+                        "sZeroRecords": "Няма намерени резултати",
+                        "sInfo": "Показване на резултати от _START_ до _END_ от общо _TOTAL_",
+                        "sInfoEmpty": "Показване на резултати от 0 до 0 от общо 0",
+                        "sInfoFiltered": "(филтрирани от общо _MAX_ резултата)",
+                        "sSearch": "Търсене:",
+                        "oPaginate": {
+                            "sFirst": "Първа",
+                            "sPrevious": "Предишна",
+                            "sNext": "Следваща",
+                            "sLast": "Последна"
+                        }
+                    }
+                });
             });
-        });
-        // End of function $(document).ready(function ()       
-    </script>
+            // End of function $(document).ready(function ()
+        </script>
+    }
 }

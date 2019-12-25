@@ -1,68 +1,73 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     ViewData["Title"] = "Search";
 }
 @model ChaletModel;
 
-<div id="msgInfo" class="isa_info" style="display: none;">
-    <i class="fa fa-info-circle"></i>
-    <strong>Информация!</strong>
-    <strong id="msgInfoText"></strong>
-</div>
-<div id="msgSuccess" class="isa_success" style="display: none;">
-    <i class="fa fa-check"></i>
-    <strong>Успех!</strong>
-    <strong id="msgSuccessText"></strong>
-</div>
-<div id="msgWarn" class="isa_warning" style="display: none;">
-    <i class="fa fa-warning"></i>
-    <strong>Предупреждение!</strong>
-    <strong id="msgWarnText"></strong>
-</div>
-<div id="msgError" class="isa_error" style="display: none;">
-    <i class="fa fa-times-circle"></i>
-    <strong>Грешка!</strong>
-    <strong id="msgErrorText"></strong>
-</div>
-
-<div class="panel panel-heading bootstrap-basic">
-    <BR>
-    <div class="row" id="search">
-        <form id="search-form" action="" method="POST" enctype="multipart/form-data">
-            <div class="form-group col-xs-12">
-                <input class="form-control" type="text" placeholder="Search" />
-            </div>
-        </form>
+@if (SignInManager.IsSignedIn(User))
+{
+    <div id="msgInfo" class="isa_info" style="display: none;">
+        <i class="fa fa-info-circle"></i>
+        <strong>Информация!</strong>
+        <strong id="msgInfoText"></strong>
     </div>
-    <div class="row" id="filter">
-        <form>
-            <div class="form-group col-sm-3 col-xs-6">
-                <select data-filter="types" class="filter-types filter form-control">
-                    <option value="">Покажи Всички</option>
-                </select>
-            </div>
-            <div class="form-group col-sm-3 col-xs-6">
-                <select data-filter="regions" class="filter-regions filter form-control">
-                    <option value="">Покажи Всички</option>
-                </select>
-            </div>
-            <div class="form-group col-sm-3 col-xs-6">
-                <select data-filter="mountains" class="filter-mountains filter form-control">
-                    <option value="">Покажи Всички</option>
-                </select>
-            </div>
-            <div class="form-group col-xs-3">
-                <button type="submit" class="btn btn-block btn-primary" id="btnSubmit">Search</button>
-            </div>
-        </form>
+    <div id="msgSuccess" class="isa_success" style="display: none;">
+        <i class="fa fa-check"></i>
+        <strong>Успех!</strong>
+        <strong id="msgSuccessText"></strong>
     </div>
-</div>
+    <div id="msgWarn" class="isa_warning" style="display: none;">
+        <i class="fa fa-warning"></i>
+        <strong>Предупреждение!</strong>
+        <strong id="msgWarnText"></strong>
+    </div>
+    <div id="msgError" class="isa_error" style="display: none;">
+        <i class="fa fa-times-circle"></i>
+        <strong>Грешка!</strong>
+        <strong id="msgErrorText"></strong>
+    </div>
 
-<div class="row" id="products"></div>
+    <div class="panel panel-heading bootstrap-basic">
+        <BR>
+        <div class="row" id="search">
+            <form id="search-form" action="" method="POST" enctype="multipart/form-data">
+                <div class="form-group col-xs-12">
+                    <input class="form-control" type="text" placeholder="Search" />
+                </div>
+            </form>
+        </div>
+        <div class="row" id="filter">
+            <form>
+                <div class="form-group col-sm-3 col-xs-6">
+                    <select data-filter="types" class="filter-types filter form-control">
+                        <option value="">Покажи Всички</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3 col-xs-6">
+                    <select data-filter="regions" class="filter-regions filter form-control">
+                        <option value="">Покажи Всички</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3 col-xs-6">
+                    <select data-filter="mountains" class="filter-mountains filter form-control">
+                        <option value="">Покажи Всички</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-3">
+                    <button type="submit" class="btn btn-block btn-primary" id="btnSubmit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-@section Scripts {
-    <script src="~/js/jquery.easyPaginate.js"></script>
+    <div class="row" id="products"></div>
 
-    <script>
+    @section Scripts {
+        <script src="~/js/jquery.easyPaginate.js"></script>
+
+        <script>
         $(document).ready(function () {
             var chalets = [];
             var types = [];
@@ -338,5 +343,6 @@
         })
         // End of $(".filter").on("change",function()
 
-    </script>
+        </script>
+    }
 }

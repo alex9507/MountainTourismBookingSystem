@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
-using Newtonsoft.Json;
-using Stripe;
 
 namespace MountainTourismBookingSystem.Controllers
 {
     public class SearchController : Controller
     {
-        private int amount = 100;
         private readonly ApplicationDbContext _dbContext;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public SearchController(ApplicationDbContext dbContext)
+        public SearchController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager)
         {
             _dbContext = dbContext;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            ViewData["Message"] = "Търсене";
-            ViewBag.PaymentAmount = amount;
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
@@ -115,15 +116,19 @@ namespace MountainTourismBookingSystem.Controllers
 
         public IActionResult Information(Guid id)
         {
-            ViewData["Message"] = "Информация.";
+            if (_signInManager.IsSignedIn(User) == true) 
+            { 
+                var model = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
 
-            var model = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+                if (model == null) {
+                    return View("Index", "Home");
+                }
 
-            if (model == null) {
-                return View("Index", "Home");
+                return View(model);
             }
-
-            return View(model);
+            else {
+                return RedirectToAction("Index", "Home");
+            }    
         }
     }
 }

@@ -7,6 +7,8 @@ using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
 using PaypalExpressCheckout.BusinessLogic.Interfaces;
 using Stripe;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MountainTourismBookingSystem.Controllers
 {
@@ -20,14 +22,17 @@ namespace MountainTourismBookingSystem.Controllers
         // }
 
         private readonly ApplicationDbContext _dbContext;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PaymentController(ApplicationDbContext dbContext)
+        public PaymentController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager)
         {
             _dbContext = dbContext;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
+            var user = User.Identity.GetUserId();
             return View();
         }
 
@@ -95,8 +100,7 @@ namespace MountainTourismBookingSystem.Controllers
                 _dbContext.Reservation.Add(vReservation);
                 _dbContext.SaveChanges();
 
-                //return RedirectToAction("Success");
-                return Json(new { success = true });
+                return RedirectToAction("Success");
             }
             else {
                 return RedirectToAction("Cancel");
@@ -105,12 +109,22 @@ namespace MountainTourismBookingSystem.Controllers
 
         public IActionResult Success()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Cancel()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
@@ -13,20 +14,32 @@ namespace MountainTourismBookingSystem.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AdminController(ApplicationDbContext dbContext)
+        public AdminController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager)
         {
             _dbContext = dbContext;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Management()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]

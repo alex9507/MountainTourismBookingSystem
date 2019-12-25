@@ -1,172 +1,176 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     ViewData["Title"] = "Менажиране";
 }
+@if (SignInManager.IsSignedIn(User))
+{
+    <BR>
+    <BR>
+    <BR>
+    <BR>
 
-<BR>
-<BR>
-<BR>
-<BR>
-
-<div id="msgInfo" class="isa_info" style="display: none;">
-    <i class="fa fa-info-circle"></i>
-    <strong>Информация!</strong>
-    <strong id="msgInfoText"></strong>
-</div>
-<div id="msgSuccess" class="isa_success" style="display: none;">
-    <i class="fa fa-check"></i>
-    <strong>Успех!</strong>
-    <strong id="msgSuccessText"></strong>
-</div>
-<div id="msgWarn" class="isa_warning" style="display: none;">
-    <i class="fa fa-warning"></i>
-    <strong>Предупреждение!</strong>
-    <strong id="msgWarnText"></strong>
-
-</div>
-<div id="msgError" class="isa_error" style="display: none;">
-    <i class="fa fa-times-circle"></i>
-    <strong>Грешка!</strong>
-    <strong id="msgErrorText"></strong>
-</div>
-
-<a class="btn btn-success" style="margin-bottom:10px" id="btnNewChalet"><i class="fa fa-plus"></i> Добавяне </a>
-
-<div class="modal-body">
-    <div style="width:100%; margin:0 auto;">
-        <table id="myTableChalets" class="ui celled table">
-            <thead>
-                <tr>
-                    <th>Име</th>
-                    <th>Вид на Обекта</th>
-                    <th>Местност</th>
-                    <th>Планина</th>
-                    <th>Брой легла</th>
-                    <th>Опции</th>
-                </tr>
-            </thead>
-        </table>
+    <div id="msgInfo" class="isa_info" style="display: none;">
+        <i class="fa fa-info-circle"></i>
+        <strong>Информация!</strong>
+        <strong id="msgInfoText"></strong>
     </div>
-</div>
+    <div id="msgSuccess" class="isa_success" style="display: none;">
+        <i class="fa fa-check"></i>
+        <strong>Успех!</strong>
+        <strong id="msgSuccessText"></strong>
+    </div>
+    <div id="msgWarn" class="isa_warning" style="display: none;">
+        <i class="fa fa-warning"></i>
+        <strong>Предупреждение!</strong>
+        <strong id="msgWarnText"></strong>
 
-<div id="myModelAddEditChalet" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"> Добавяне / Редактиране на Обект </h4>
-            </div>
-            <div class="modal-body">
-                <!--.........................................................-->
-                <div class="form-group" style="display:none">
-                    <label>ID</label>
-                    <input type="text" id="txtEditChaletId" class="form-control" value="" maxlength="36" disabled />
+    </div>
+    <div id="msgError" class="isa_error" style="display: none;">
+        <i class="fa fa-times-circle"></i>
+        <strong>Грешка!</strong>
+        <strong id="msgErrorText"></strong>
+    </div>
+
+    <a class="btn btn-success" style="margin-bottom:10px" id="btnNewChalet"><i class="fa fa-plus"></i> Добавяне </a>
+
+    <div class="modal-body">
+        <div style="width:100%; margin:0 auto;">
+            <table id="myTableChalets" class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>Име</th>
+                        <th>Вид на Обекта</th>
+                        <th>Местност</th>
+                        <th>Планина</th>
+                        <th>Брой легла</th>
+                        <th>Опции</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div id="myModelAddEditChalet" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"> Добавяне / Редактиране на Обект </h4>
                 </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Име</label>
-                    <input type="text" id="txtEditChaletName" class="form-control" value="" maxlength="250" />
+                <div class="modal-body">
+                    <!--.........................................................-->
+                    <div class="form-group" style="display:none">
+                        <label>ID</label>
+                        <input type="text" id="txtEditChaletId" class="form-control" value="" maxlength="36" disabled />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Име</label>
+                        <input type="text" id="txtEditChaletName" class="form-control" value="" maxlength="250" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="row" id="filter">
+                        <form>
+                            <div class="form-group col-sm-4 col-xs-6">
+                                <label>Тип</label>
+                                <select data-filter="types" class="filter-types filter form-control">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-4 col-xs-6">
+                                <label>Регион</label>
+                                <select data-filter="regions" class="filter-regions filter form-control">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-4 col-xs-6">
+                                <label>Планина</label>
+                                <select data-filter="mountains" class="filter-mountains filter form-control">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Обща информация</label>
+                        <textarea id="txtEditChaletInformation" cols="50" rows="7" class="form-control"></textarea>
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Снимка</label>
+                        <input type="text" id="txtEditChaletPicture" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Местонахождение</label>
+                        <input type="text" id="txtEditChaletLocationInfo" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Георграфски координати</label>
+                        <input type="text" id="txtEditChaletLocationCoordinates" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Точно местоположение</label>
+                        <input type="text" id="txtEditChaletLocationMap" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Надморска височина</label>
+                        <input type="text" id="txtEditChaletAltitude" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Изходен пункт за обекта</label>
+                        <input type="text" id="txtEditChaletStartingPoint" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Собственик</label>
+                        <input type="text" id="txtEditChaletOwner" class="form-control" value="" maxlength="200" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Телефон на Собственика</label>
+                        <input type="text" id="txtEditChaletGsm" class="form-control" value="" maxlength="50" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Контакти</label>
+                        <input type="text" id="txtEditChaletContacts" class="form-control" value="" maxlength="200" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Маршрути и съседни туристически обекти</label>
+                        <input type="text" id="txtEditChaletRoutes" class="form-control" value="" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Брой легла</label>
+                        <input type="text" id="txtEditChaletBeds" class="form-control" value="" oninput="this.value = this.value.replace(/[^0-9]+/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" />
+                    </div>
+                    <!--.........................................................-->
+                    <div class="form-group">
+                        <label>Цена на нощувка</label>
+                        <input type="text" id="txtEditChaletPrice" class="form-control" value="" oninput="this.value = this.value.replace(/[^0-9]+/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" />
+                    </div>
+                    <!--.........................................................-->
+                    <button type="button" id="btnEditChalet" class="btn btn-success">Добавяне / Редактиране</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Затваряне</button>
                 </div>
-                <!--.........................................................-->
-                <div class="row" id="filter">
-                    <form>
-                        <div class="form-group col-sm-4 col-xs-6">
-                            <label>Тип</label>
-                            <select data-filter="types" class="filter-types filter form-control">
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-4 col-xs-6">
-                            <label>Регион</label>
-                            <select data-filter="regions" class="filter-regions filter form-control">
-                            </select>
-                        </div>
-                        <div class="form-group col-sm-4 col-xs-6">
-                            <label>Планина</label>
-                            <select data-filter="mountains" class="filter-mountains filter form-control">
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Обща информация</label>
-                    <textarea id="txtEditChaletInformation" cols="50" rows="7" class="form-control"></textarea>
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Снимка</label>
-                    <input type="text" id="txtEditChaletPicture" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Местонахождение</label>
-                    <input type="text" id="txtEditChaletLocationInfo" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Георграфски координати</label>
-                    <input type="text" id="txtEditChaletLocationCoordinates" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Точно местоположение</label>
-                    <input type="text" id="txtEditChaletLocationMap" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Надморска височина</label>
-                    <input type="text" id="txtEditChaletAltitude" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Изходен пункт за обекта</label>
-                    <input type="text" id="txtEditChaletStartingPoint" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Собственик</label>
-                    <input type="text" id="txtEditChaletOwner" class="form-control" value="" maxlength="200" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Телефон на Собственика</label>
-                    <input type="text" id="txtEditChaletGsm" class="form-control" value="" maxlength="50" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Контакти</label>
-                    <input type="text" id="txtEditChaletContacts" class="form-control" value="" maxlength="200" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Маршрути и съседни туристически обекти</label>
-                    <input type="text" id="txtEditChaletRoutes" class="form-control" value="" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Брой легла</label>
-                    <input type="text" id="txtEditChaletBeds" class="form-control" value="" oninput="this.value = this.value.replace(/[^0-9]+/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" />
-                </div>
-                <!--.........................................................-->
-                <div class="form-group">
-                    <label>Цена на нощувка</label>
-                    <input type="text" id="txtEditChaletPrice" class="form-control" value="" oninput="this.value = this.value.replace(/[^0-9]+/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" />
-                </div>
-                <!--.........................................................-->
-                <button type="button" id="btnEditChalet" class="btn btn-success">Добавяне / Редактиране</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Затваряне</button>
             </div>
         </div>
     </div>
-</div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet" />
 
-@section Scripts {
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    @section Scripts {
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
 
-    <script>
+        <script>
         var dataTable;
         $(document).ready(function () {
 
@@ -369,7 +373,7 @@
             SaveNewChaletData(data);
         })
         // End of function $(document).on('click', '#btnEditChalet', function () {
-        
+
         function SaveNewChaletData(data) {
             $.ajax({
                 type: "POST",
@@ -545,11 +549,12 @@
                         $('#msgErrorText').empty().append("Има проблем при изтриването на Обекта.");
                         $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
                     }
-            
+
                 });
             }
         }
         // End of function Delete(id) {
 
-    </script>
+        </script>
+    }
 }

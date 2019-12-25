@@ -1,139 +1,147 @@
-﻿@using Microsoft.Extensions.Options
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
+
+@inject SignInManager<ApplicationUser> SignInManager
 @inject IOptions<MountainTourismBookingSystem.Data.StripeSettings> Stripe
 @{
     ViewData["Title"] = "Календар за Резервации";
 }
 @model ChaletModel;
-@{ Guid dataGuid = Guid.NewGuid();;}
+@{ Guid dataGuid = Guid.NewGuid(); ;}
 
-<BR><BR><BR><BR>
+@if (SignInManager.IsSignedIn(User))
+{
+    <BR>
+    <BR>
+    <BR>
+    <BR>
 
-<div style="background-color:whitesmoke">
-    <div id="calendar"></div>
-</div>
+    <div style="background-color:whitesmoke">
+        <div id="calendar"></div>
+    </div>
 
-<div id="msgInfo" class="isa_info" style="display: none;">
-    <i class="fa fa-info-circle"></i>
-    <strong>Информация!</strong>
-    <strong id="msgInfoText"></strong>
-</div>
-<div id="msgSuccess" class="isa_success" style="display: none;">
-    <i class="fa fa-check"></i>
-    <strong>Успех!</strong>
-    <strong id="msgSuccessText"></strong>
-</div>
-<div id="msgWarn" class="isa_warning" style="display: none;">
-    <i class="fa fa-warning"></i>
-    <strong>Предупреждение!</strong>
-    <strong id="msgWarnText"></strong>
-</div>
-<div id="msgError" class="isa_error" style="display: none;">
-    <i class="fa fa-times-circle"></i>
-    <strong>Грешка!</strong>
-    <strong id="msgErrorText"></strong>
-</div>
+    <div id="msgInfo" class="isa_info" style="display: none;">
+        <i class="fa fa-info-circle"></i>
+        <strong>Информация!</strong>
+        <strong id="msgInfoText"></strong>
+    </div>
+    <div id="msgSuccess" class="isa_success" style="display: none;">
+        <i class="fa fa-check"></i>
+        <strong>Успех!</strong>
+        <strong id="msgSuccessText"></strong>
+    </div>
+    <div id="msgWarn" class="isa_warning" style="display: none;">
+        <i class="fa fa-warning"></i>
+        <strong>Предупреждение!</strong>
+        <strong id="msgWarnText"></strong>
+    </div>
+    <div id="msgError" class="isa_error" style="display: none;">
+        <i class="fa fa-times-circle"></i>
+        <strong>Грешка!</strong>
+        <strong id="msgErrorText"></strong>
+    </div>
 
-<div id="myModel" class="modal fade" role="dialog" style="top: 10%;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><span id="reservationChaletName"></span></h4>
-            </div>
-            <div class="modal-body">
-                <button id="btnDelete" class="btn btn-danger btn-sm pull-right">
-                    <span class="glyphicon glyphicon-remove"></span> Отказване
-                </button>
-                <p id="pDetails"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Затваряне</button>
+    <div id="myModel" class="modal fade" role="dialog" style="top: 10%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="reservationChaletName"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <button id="btnDelete" class="btn btn-danger btn-sm pull-right">
+                        <span class="glyphicon glyphicon-remove"></span> Отказване
+                    </button>
+                    <p id="pDetails"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Затваряне</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Запазване на Обект за дати: </h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Брой хора</label>
-                    <input type="number" id="txtPeopleCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
+    <div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Запазване на Обект за дати: </h4>
                 </div>
-                <div class="form-group">
-                    <label>Сума</label>
-                    <input type="number" id="txtAmount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1')" disabled />
-                </div>
-                <div class="form-group">
-                    <label>Валута</label>
-                    <input type="text" id="txtCurrency" class="form-control" maxlength="3" value="BGN" disabled />
-                </div>
-                <div class="form-group">
-                    <label>Начална дата</label>
-                    <div class="input-group date" id="dpFrom">
-                        <input type="text" id="txtStart" class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Брой хора</label>
+                        <input type="number" id="txtPeopleCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label><input type="checkbox" id="chIsFullDay" checked="checked" />Резервация за един ден</label>
+                    <div class="form-group">
+                        <label>Сума</label>
+                        <input type="number" id="txtAmount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1')" disabled />
                     </div>
-                </div>
-                <div class="form-group" id="divToDate" style="display:none">
-                    <label>Крайна дата</label>
-                    <div class="input-group date" id="dpTo">
-                        <input type="text" id="txtEnd" class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                    <div class="form-group">
+                        <label>Валута</label>
+                        <input type="text" id="txtCurrency" class="form-control" maxlength="3" value="BGN" disabled />
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Цвят на темата</label>
-                    <select id="divColor" class="form-control">
-                        <option value="green">Зелен</option>
-                        <option value="red">Червен</option>
-                        <option value="blue">Син</option>
-                        <option value="purple">Лилав</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Начална дата</label>
+                        <div class="input-group date" id="dpFrom">
+                            <input type="text" id="txtStart" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="chIsFullDay" checked="checked" />Резервация за един ден</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="divToDate" style="display:none">
+                        <label>Крайна дата</label>
+                        <div class="input-group date" id="dpTo">
+                            <input type="text" id="txtEnd" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Цвят на темата</label>
+                        <select id="divColor" class="form-control">
+                            <option value="green">Зелен</option>
+                            <option value="red">Червен</option>
+                            <option value="blue">Син</option>
+                            <option value="purple">Лилав</option>
+                        </select>
+                    </div>
+
+                    <div class="floated">
+                        <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-dataGuid="@dataGuid" method='POST' id="modelPay" onclick="postDataSave()">
+                        </form>
+                    </div>
+
+                    <button value="submit" id="paypal-button" class="modal-content"> </button>
                 </div>
 
-                <div class="floated">
-                    <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-dataGuid="@dataGuid" method='POST' id="modelPay" onclick="postDataSave()">
-                    </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
                 </div>
-
-                <button value="submit" id="paypal-button" class="modal-content"> </button>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
             </div>
         </div>
     </div>
-</div>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media="print" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media="print" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
-@section Scripts {
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/gcal.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/locale/bg.js"></script>
-    <script type="text/javascript" src="https://www.paypalobjects.com/api/checkout.js"></script>
+    @section Scripts {
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/gcal.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/locale/bg.js"></script>
+        <script type="text/javascript" src="https://www.paypalobjects.com/api/checkout.js"></script>
 
-    <script>
+        <script>
         $(document).ready(function () {
             var reservations = [];
             var selectedReservation = null;
@@ -308,7 +316,7 @@
                     $('#divToDate').show();
                 }
             });
-            // End of $('#chIsFullDay').change(function () {      
+            // End of $('#chIsFullDay').change(function () {
         })
         // End of $(document).ready(function () {
 
@@ -419,5 +427,6 @@
         }
         // End of function changeData(data) {
 
-    </script>
+        </script>
+    }
 }
