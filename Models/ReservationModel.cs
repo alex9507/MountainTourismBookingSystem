@@ -42,7 +42,6 @@ namespace MountainTourismBookingSystem.Models
         [MaxLength(50)]
         public string color { get; set; }
 
-        [Required]
         public Guid user_id { get; set; }
     }
 }

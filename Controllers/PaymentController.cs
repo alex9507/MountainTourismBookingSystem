@@ -32,8 +32,12 @@ namespace MountainTourismBookingSystem.Controllers
 
         public IActionResult Index()
         {
-            var user = User.Identity.GetUserId();
-            return View();
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -94,7 +98,8 @@ namespace MountainTourismBookingSystem.Controllers
                     currency                = vHelperData.currency,
                     people_count            = vHelperData.people_count,
                     balance_transaction_id  = charge.BalanceTransactionId,
-                    color                   = vHelperData.color
+                    color                   = vHelperData.color,
+                    user_id                 = vHelperData.user_id
                 };
 
                 _dbContext.Reservation.Add(vReservation);
@@ -130,6 +135,8 @@ namespace MountainTourismBookingSystem.Controllers
         [HttpPost]
         public IActionResult SaveData(ReservationDataHelperModel data)
         {
+            data.user_id = Guid.Parse(User.Identity.GetUserId());
+
             _dbContext.ReservationDataHelper.Add(data);
             _dbContext.SaveChanges();
 
