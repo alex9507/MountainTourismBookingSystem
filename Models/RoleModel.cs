@@ -9,6 +9,6 @@ namespace MountainTourismBookingSystem.Models
     public class RoleModel
     {
         [Required]
-        public string role_name { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
 using Newtonsoft.Json;
@@ -16,12 +17,14 @@ namespace MountainTourismBookingSystem.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _dbContext = dbContext;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -151,7 +154,7 @@ namespace MountainTourismBookingSystem.Controllers
             {
                 IdentityRole identityRole = new IdentityRole
                 {
-                    Name = model.role_name
+                    Name = model.Name
                 };
 
                 IdentityResult result = await _roleManager.CreateAsync(identityRole);
@@ -166,6 +169,39 @@ namespace MountainTourismBookingSystem.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult AssignRole()
+        {
+            ViewBag.Name = new SelectList(_dbContext.Roles.ToList(), "Name", "Name");
+            ViewBag.UserName = new SelectList(_dbContext.Users.ToList(), "UserName", "UserName");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AssignRole(ApplicationUser user, RoleModel model)
+        {
+
+            var vUser = _dbContext.Users.Where(x => x.UserName == user.UserName).FirstOrDefault();
+
+            if (vUser != null)
+            {
+                IdentityResult result = await _userManager.AddToRoleAsync(vUser, model.Name);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+
+                }
+            }
+                
+            return RedirectToAction("Index", "Home");
         }
     }
 }
