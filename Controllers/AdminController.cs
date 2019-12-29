@@ -15,11 +15,13 @@ namespace MountainTourismBookingSystem.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AdminController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager)
+        public AdminController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -117,6 +119,53 @@ namespace MountainTourismBookingSystem.Controllers
             _dbContext.SaveChanges();
 
             return Json(data);
+        }
+
+        [HttpGet]
+        public IActionResult RoleManagement()
+        {
+            if (_signInManager.IsSignedIn(User) == true) {
+                var roles = _dbContext.Roles.ToList();
+                return View(roles);
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CreateRole()
+        {
+            if (_signInManager.IsSignedIn(User) == true) {
+                return View();
+            }
+            else {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole(RoleModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                IdentityRole identityRole = new IdentityRole
+                {
+                    Name = model.role_name
+                };
+
+                IdentityResult result = await _roleManager.CreateAsync(identityRole);
+
+                if (result.Succeeded) {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach (IdentityError error in result.Errors) {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View(model);
         }
     }
 }

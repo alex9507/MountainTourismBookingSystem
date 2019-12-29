@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "RoleManagement";
+}
+@if (SignInManager.IsSignedIn(User))
+{
+    <BR>
+    <BR>
+    <BR>
+    <BR>
+    <div class="panel panel-default bootstrap-basic">
+        <div class="panel-heading">
+            <h3 class="panel-title">Администриране на Роли</h3>
+        </div>
+        <BR>
+        <section class="col-sm-6">
+            <table class="table-bordered">
+                @Html.ActionLink("Създаване на нова Роля", "CreateRole", "Admin")
+            </table>
+        </section>
+
+        <section class="col-sm-6">
+            <table class="table-bordered">
+                @Html.ActionLink("Задаване на роля за потребител", "AssignRole", "Admin")
+            </table>
+        </section>
+
+        <BR>
+        <BR>
+    </div>
+    <div class="panel panel-default bootstrap-basic">
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th class="c">
+                    Име на роля
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="c">
+                        @item.Name
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}

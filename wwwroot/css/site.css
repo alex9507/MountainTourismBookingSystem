@@ -156,3 +156,15 @@ body {
 .easyPaginateNav {
     text-align: center;
 }
+
+/*
+.navbar-inverse {
+    background-color: #286090;
+    border-color: #337ab7;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
+    color: #286090;
+    background-color: #337ab7;
+}
+*/
