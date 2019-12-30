@@ -45,8 +45,8 @@ Update-Database
 Размер на Снимките:
 700 х 517
 
-
-
+https://hassantariqblog.wordpress.com/2017/03/20/asp-net-core-sending-email-with-gmail-account-using-asp-net-core-services/
+ConfigurationManager.AppSettings["EmailUsername"].ToString()
 
 
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>

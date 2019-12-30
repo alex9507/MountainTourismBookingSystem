@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Stripe;
 using MountainTourismBookingSystem.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace MountainTourismBookingSystem
 {
@@ -53,6 +54,9 @@ namespace MountainTourismBookingSystem
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddTransient<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
