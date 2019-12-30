@@ -2,12 +2,9 @@
 @using Microsoft.Extensions.Options
 
 @inject SignInManager<ApplicationUser> SignInManager
-@inject IOptions<MountainTourismBookingSystem.Data.StripeSettings> Stripe
 @{
     ViewData["Title"] = "Календар за Резервации";
 }
-@model ChaletModel;
-@{ Guid dataGuid = Guid.NewGuid(); ;}
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -61,74 +58,6 @@
         </div>
     </div>
 
-    <div id="modelReserve" class="modal fade" role="dialog" style="top: 10%;" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Запазване на Обект за дати: </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Брой хора</label>
-                        <input type="number" id="txtPeopleCount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1'); calculateAmount();" />
-                    </div>
-                    <div class="form-group">
-                        <label>Сума</label>
-                        <input type="number" id="txtAmount" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1')" disabled />
-                    </div>
-                    <div class="form-group">
-                        <label>Валута</label>
-                        <input type="text" id="txtCurrency" class="form-control" maxlength="3" value="BGN" disabled />
-                    </div>
-                    <div class="form-group">
-                        <label>Начална дата</label>
-                        <div class="input-group date" id="dpFrom">
-                            <input type="text" id="txtStart" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label><input type="checkbox" id="chIsFullDay" checked="checked" />Резервация за един ден</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="divToDate" style="display:none">
-                        <label>Крайна дата</label>
-                        <div class="input-group date" id="dpTo">
-                            <input type="text" id="txtEnd" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Цвят на темата</label>
-                        <select id="divColor" class="form-control">
-                            <option value="green">Зелен</option>
-                            <option value="red">Червен</option>
-                            <option value="blue">Син</option>
-                            <option value="purple">Лилав</option>
-                        </select>
-                    </div>
-
-                    <div class="floated">
-                        <form asp-action='Charge' asp-controller='Payment' asp-route-id='@Model.unique_id' asp-route-dataGuid="@dataGuid" method='POST' id="modelPay" onclick="postDataSave()">
-                        </form>
-                    </div>
-
-                    <button value="submit" id="paypal-button" class="modal-content"> </button>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.1/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media="print" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
@@ -151,8 +80,7 @@
                 reservations = [];
                 $.ajax({
                     type: "GET",
-                    url: "/Reservation/GetReservations",
-                    data: { "unique_id" : '@Model.unique_id'},
+                    url: "/Admin/GetReservations",
                     success: function (data) {
                         $.each(data, function (i, v) {
                             reservations.push({
@@ -271,52 +199,11 @@
                             dt_to: event.end != null ? event.end.format('YYYY-MM-DD') : null,
                             is_full_day: event.is_full_day
                         };
-
-                        changeData(data)
+                        changeData(data);
                     }
                 })
             }
             // End of function GenerateCalendar(reservations) {
-
-            paypal.Button.render({
-                env: 'sandbox', //'production',
-                commit: true, // Show a 'Pay Now' button
-                payment: function () {
-                    return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {
-                        return data.id;
-                    });
-                },
-                onAuthorize: function (data) {
-                    return paypal.request.post(EXECUTE_PAYMENT_URL, {
-                        paymentID: data.paymentID,
-                        payerID: data.payerID
-                    }).then(function () {
-                        window.location.href = 'https://localhost:44385/Payment/Success'
-                    });
-                }
-            }, '#paypal-button');
-            // End of paypal.Button.render({
-
-            $('#dpFrom,#dpTo').datetimepicker({
-                format: 'YYYY-MM-DD',
-            });
-            // End of $('#dpFrom,#dpTo').datetimepicker({
-
-            $("#dpFrom,#dpTo").on("dp.change", function (e) {
-                calculateAmount();
-            });
-
-            $('#chIsFullDay').change(function () {
-                if ($(this).is(':checked')) {
-                     calculateAmount();
-                    $('#divToDate').hide();
-                   }
-                else {
-                     calculateAmount();
-                    $('#divToDate').show();
-                }
-            });
-            // End of $('#chIsFullDay').change(function () {
         })
         // End of $(document).ready(function () {
 
@@ -334,100 +221,7 @@
         }
         // End of function openReservationForm() {
 
-        $('#txtStart, #txtEnd').change(function() {
-            calculateAmount();
-        });
-        // End of $('#txtStart, #txtEnd').change(function() {
-
-        function calculateAmount() {
-            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-            var formatStartDate = new Date($('#txtStart').val()).toLocaleDateString("en-US").trim();
-            var formatEndDate = new Date($('#txtEnd').val()).toLocaleDateString("en-US").trim();
-
-            var startDate = new Date(formatStartDate);
-            var endDate = new Date(formatEndDate);
-
-            if (startDate > endDate) {
-                $('#msgInfoText').empty().append("Невалидна Крайна дата.");
-                $('#msgInfo').fadeIn(800).delay(3000).fadeOut(800);
-                return;
-            }
-
-            if ($("#chIsFullDay").is(':checked')) {
-                $('#txtAmount').val($('#txtPeopleCount').val() * @Model.price);
-            }
-            else
-            {
-                var timeDiff = Math.abs(endDate - startDate);
-                var diffDays = Math.ceil(timeDiff / _MS_PER_DAY);
-                $('#txtAmount').val($('#txtPeopleCount').val() * @Model.price * diffDays);
-            }
-            generateStripeModel();
-        }
-        // End of function calculateAmount() {
-
-        function generateStripeModel() {
-            var generate_stripe = "";
-            if ($('#txtAmount').val() != "" && $('#txtAmount').val() != "0"
-                && $('#txtPeopleCount').val() != "") {
-                generate_stripe =
-                    "       <script src='https://checkout.stripe.com/v2/checkout.js' class='stripe-button' "
-                    + "           data-key='@Stripe.Value.PublishableKey' "
-                    + "           data-amount='" + $('#txtAmount').val() * 100 + "' "
-                    + "           data-name='Резервационна система за планински туризъм' "
-                    + "           data-description='Хижа @Model.name за цена: " + $('#txtAmount').val() + " лева' "
-                    + "           data-image='https://stripe.com/img/documentation/checkout/marketplace.png' "
-                    + "           data-locale='auto' "
-                    + "           data-billing-address='true' "
-                    + "           data-zip-code='true'"
-                    + "           data-label='Плащане с карта'> "
-                    + "       </" + "script> ";
-            }
-
-            $("#modelPay").html(generate_stripe);
-        }
-        // End of function generateStripeModel() {
-
-        function postDataSave() {
-            var data = {
-                chalet_id: @Model.chalet_id,
-                unique_id: '@dataGuid',
-                dt_from: $('#txtStart').val(),
-                dt_to: $('#chIsFullDay').is(':checked') ? null : $('#txtEnd').val(),
-                is_full_day: $('#chIsFullDay').is(':checked'),
-                amount: $('#txtAmount').val(),
-                currency: $('#txtCurrency').val(),
-                people_count: $('#txtPeopleCount').val(),
-                color: $('#divColor').val()
-            }
-
-            $.ajax({
-                    type: "POST",
-                    url: "/Payment/SaveData",
-                    data: data,
-                    error: function () {
-                        $('#msgErrorText').empty().append("Има проблем при запазването на информацията за плащането.");
-                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
-                    }
-                })
-        }
-        // End of function postDataSave() {
-
-        function changeData(data) {
-            $.ajax({
-                    type: "POST",
-                    url: "/Payment/ChangeData",
-                    data: data,
-                    error: function () {
-                        $('#msgErrorText').empty().append("Има проблем при запазването на информацията за плащането.");
-                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
-                    }
-                })
-        }
-        // End of function changeData(data) {
-
-        $('#btnDelete').click(function () {
+             $('#btnDelete').click(function () {
             if (selectedTask != null && confirm('Сигурни ли сте, че искате да изтриете това задание ?')) {
                 DeleteTask();
             }
@@ -437,7 +231,7 @@
         function DeleteTask() {
             $.ajax({
                 type: "POST",
-                url: "/Reservation/Delete",
+                url: "/Admin/DeleteReservation",
                 data: { 'id': selectedReservation.reservation_id },
                 success: function (data) {
                     if (data.status) {
@@ -453,6 +247,19 @@
             })
         }
         // End of function DeleteTask() {
+
+        function changeData(data) {
+            $.ajax({
+                    type: "POST",
+                    url: "/Payment/ChangeData",
+                    data: data,
+                    error: function () {
+                        $('#msgErrorText').empty().append("Има проблем при запазването на информацията за плащането.");
+                        $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                })
+        }
+        // End of function changeData(data) {
 
         </script>
     }

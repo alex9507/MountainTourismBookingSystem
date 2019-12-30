@@ -123,7 +123,7 @@ namespace MountainTourismBookingSystem.Controllers
                 _dbContext.Remove(reservation);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("Management", "Reservation");
+                return RedirectToAction("Index", "Reservation");
             }
             else
             {

@@ -214,5 +214,109 @@ namespace MountainTourismBookingSystem.Controllers
                 
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult ReservationCalendar()
+        {
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public IActionResult ReservationManagement()
+        {
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public IActionResult GetReservations()
+        {
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+
+                var reservations = (from r in _dbContext.Reservation
+                                    join c in _dbContext.Chalet on r.chalet_id equals c.chalet_id
+                                    select new
+                                    {
+                                        reservation_id = r.reservation_id,
+                                        dt = r.dt,
+                                        chalet_name = c.name,
+                                        dt_from = r.dt_from,
+                                        dt_to = r.dt_to,
+                                        status = r.status,
+                                        amount = r.amount,
+                                        currency = r.currency,
+                                        people_count = r.people_count,
+                                        color = r.color,
+                                        is_full_day = r.is_full_day
+                                    }).ToList();
+
+                if (reservations == null)
+                {
+                    return View("Index", "Home");
+                }
+
+                return Json(reservations);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public IActionResult DeleteReservation(long id)
+        {
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+                ReservationModel reservation = _dbContext.Reservation.Where(x => x.reservation_id == id).FirstOrDefault();
+
+                _dbContext.Remove(reservation);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("ReservationCalendar", "Admin");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetAllReservations()
+        {
+            var data = (from re in _dbContext.Reservation
+                        join c in _dbContext.Chalet on re.chalet_id equals c.chalet_id
+                        join t in _dbContext.ChaletType on c.chalet_type equals t.code
+                        join r in _dbContext.Region on c.region_type equals r.code
+                        join m in _dbContext.Mountain on c.mountain_type equals m.code
+                        join u in _dbContext.Users on re.user_id.ToString() equals u.Id
+                        select new
+                        {
+                            c_user_id = re.user_id,
+                            c_user_name = u.FirstName + " " + u.LastName,
+                            c_name = c.name,
+                            c_chalet_type = t.description,
+                            c_region_type = r.description,
+                            c_mountain_type = m.description,
+                            c_date_from = re.dt_from,
+                            c_date_to = re.dt_to,
+                            c_status = re.status,
+                            c_amount = re.amount / 100,
+                            c_currency = re.currency,
+                            c_id = re.reservation_id
+                        }).ToList();
+
+            return Json(data);
+        }
     }
 }
