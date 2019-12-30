@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 
 namespace MountainTourismBookingSystem.Controllers
 {
+    [Authorize(Roles = "Admin, Manager")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -172,6 +174,7 @@ namespace MountainTourismBookingSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult AssignRole()
         {
             ViewBag.Name = new SelectList(_dbContext.Roles.ToList(), "Name", "Name");
@@ -180,6 +183,7 @@ namespace MountainTourismBookingSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AssignRole(ApplicationUser user, RoleModel model)
         {
 
