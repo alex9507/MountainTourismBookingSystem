@@ -107,11 +107,28 @@ namespace MountainTourismBookingSystem.Controllers
                             c_date_to = re.dt_to,
                             c_status = re.status,
                             c_amount = re.amount / 100,
-                            c_currency = re.currency
-
+                            c_currency = re.currency,
+                            c_id = re.reservation_id
                         }).ToList();
 
             return Json(data);
+        }
+
+        public IActionResult Delete(long id)
+        {
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+                ReservationModel reservation = _dbContext.Reservation.Where(x => x.reservation_id == id).FirstOrDefault();
+
+                _dbContext.Remove(reservation);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("Management", "Reservation");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

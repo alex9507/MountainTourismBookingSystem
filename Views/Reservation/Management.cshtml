@@ -47,6 +47,7 @@
                         <th>Статус</th>
                         <th>Сума</th>
                         <th>Валута</th>
+                        <th>Опции</th>
                     </tr>
                 </thead>
             </table>
@@ -82,7 +83,14 @@
                         { "data": "c_date_to",          "name":     "c_date_to",            "autoWidth": true },
                         { "data": "c_status",           "name":     "c_status",             "autoWidth": true },
                         { "data": "c_amount",           "name":     "c_amount",             "autoWidth": true },
-                        { "data": "c_currency",         "name":     "c_currency",           "autoWidth": true }
+                        { "data": "c_currency",         "name":     "c_currency",           "autoWidth": true },
+                        { "data": "c_id",               "render":   function (data) {
+                                return "<a class='btn btn-danger' style='margin-left:5px' onclick=Delete('" + data + "')><i class='fa fa-trash'></i> Отказване</a>";
+                            },
+                            "orderable": false,
+                            "searchable": false,
+                            "autoWidth": true 
+                        }
                     ],
                     "language": {
                         "sProcessing": "Обработка на резултатите...",

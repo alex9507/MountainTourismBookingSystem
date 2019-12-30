@@ -119,11 +119,18 @@ namespace MountainTourismBookingSystem.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            ChaletModel data = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
-            _dbContext.Chalet.Remove(data);
-            _dbContext.SaveChanges();
+            if (_signInManager.IsSignedIn(User) == true)
+            {
+                ChaletModel data = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+                _dbContext.Chalet.Remove(data);
+                _dbContext.SaveChanges();
 
-            return Json(data);
+                return RedirectToAction("Management", "Admin");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]

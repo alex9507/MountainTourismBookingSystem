@@ -196,13 +196,13 @@
                     { "data": "c_mountain_type",  "autoWidth": true },
                     { "data": "c_beds",           "autoWidth": true },
                     { "data": "c_id",             "render": function (data) {
-                            return "<a class='btn btn-info btn-sm' style='margin-left:5px' onclick=GetInfoById('" + data + "')><i class='fa fa-pencil'></i> Редакция</a>"
-                             + "<a class='btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete('" + data + "')><i class='fa fa-trash'></i> Триене</a>";
-                    },
-                    "orderable": false,
-                    "searchable": false,
-                    "width": "150px"
-                    }
+                            return "<a class='btn btn-info' style='margin-left:5px' onclick=GetInfoById('" + data + "')><i class='fa fa-pencil'></i> Редакция</a>"
+                             + "<a class='btn btn-danger' style='margin-left:5px' onclick=Delete('" + data + "')><i class='fa fa-trash'></i> Триене</a>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "autoWidth": true 
+                        }
                 ],
                 "language": {
                                         "sProcessing":   "Обработка на резултатите...",
