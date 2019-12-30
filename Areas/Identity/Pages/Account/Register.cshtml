@@ -4,41 +4,50 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-form-title" style="background-image: url('https://i.imgur.com/YflXnom.jpg');">
+                <span class="login100-form-title-1">
+                    Регистрация
+                </span>
+            </div>
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h4><b>Създаване на нов акаунт</b></h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="wrap-input100 validate-input m-b-26" style="margin-top:10px">
+                    <label asp-for="Input.Email">Имейл</label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-26" style="margin-top:10px">
+                    <label asp-for="Input.FirstName">Име</label>
+                    <input asp-for="Input.FirstName" class="form-control" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-26" style="margin-top:10px">
+                    <label asp-for="Input.LastName">Фамилия</label>
+                    <input asp-for="Input.LastName" class="form-control" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-26" style="margin-top:10px">
+                    <label asp-for="Input.Password">Парола</label>
+                    <input asp-for="Input.Password" class="form-control" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-26" style="margin-top:10px">
+                    <label asp-for="Input.ConfirmPassword">Потвърждаване на Парола</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <BR>
+                <div style="margin-left:40%">
+                    <input type="submit" class="btn btn-success" style="margin-bottom:10px" value="Регистрация" />
+                </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Създаване на Нов Акаунт</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-default">Регистрация</button>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
