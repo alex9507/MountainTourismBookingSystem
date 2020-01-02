@@ -231,7 +231,7 @@
                         $('#myModel #reservationChaletName').text(calTask.title);
 
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount /100 ));
+                        $description.append($('<p/>').html('<b>Платена сума: </b>' + calTask.amount ));
                         $description.append($('<p/>').html('<b>Валута: </b>' + calTask.currency));
                         $description.append($('<p/>').html('<b>Брой хора: </b>' + calTask.people_count));
                         $description.append($('<p/>').html('<b>Начална дата: </b>' + calTask.start.format("YYYY-MMM-DD")));
@@ -278,9 +278,11 @@
             }
             // End of function GenerateCalendar(reservations) {
 
+            var CREATE_PAYMENT_URL = 'https://localhost:44385/Payment/CreatePayment';
+            var EXECUTE_PAYMENT_URL = 'https://localhost:44385/Payment/ExecutePayment';
             paypal.Button.render({
                 env: 'sandbox', //'production',
-                commit: true, // Show a 'Pay Now' button
+                commit: true,
                 payment: function () {
                     return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {
                         return data.id;

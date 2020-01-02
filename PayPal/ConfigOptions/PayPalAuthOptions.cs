@@ -1,4 +1,4 @@
-﻿namespace PaypalExpressCheckout.BusinessLogic.ConfigOptions
+﻿namespace MountainTourismBookingSystem.PayPal.ConfigOptions
 {
     public class PayPalAuthOptions
     {

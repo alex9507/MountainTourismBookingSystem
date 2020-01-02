@@ -37,6 +37,10 @@ MountainTourismBookingSystem@gmail.com
 88 935 1232
 01 01 1995
 
+Second Paypal Acc:
+timeschedulingsystem@gmail.com
+!Tim3Schedule123
+
 https://blog.elmah.io/accepting-payments-with-stripe-and-aspnet-core/
 
 Add-migration Initial1

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MountainTourismBookingSystem.Data;
 using MountainTourismBookingSystem.Models;
-using PaypalExpressCheckout.BusinessLogic.Interfaces;
+using MountainTourismBookingSystem.PayPal.Interfaces;
 using Stripe;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -14,20 +14,15 @@ namespace MountainTourismBookingSystem.Controllers
 {
     public class PaymentController : Controller
     {
-        // private readonly IPaypalServices _PaypalServices;
-        // 
-        // public PaymentController(IPaypalServices paypalServices)
-        // {
-        //     _PaypalServices = paypalServices;
-        // }
-
         private readonly ApplicationDbContext _dbContext;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IPaypalServices _paypalServices;
 
-        public PaymentController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager)
+        public PaymentController(ApplicationDbContext dbContext, SignInManager<ApplicationUser> signInManager, IPaypalServices paypalServices)
         {
             _dbContext = dbContext;
             _signInManager = signInManager;
+            _paypalServices = paypalServices;
         }
 
         public IActionResult Index()
@@ -66,7 +61,7 @@ namespace MountainTourismBookingSystem.Controllers
 
             var charge = charges.Create(new ChargeCreateOptions
             {
-                Amount = (long)vChalet.price * 100,
+                Amount = (long)vHelperData.amount * 100,
                 Description = vChalet.name + " Reservation",
                 Currency = "bgn",
                 Customer = customer.Id,
@@ -169,22 +164,20 @@ namespace MountainTourismBookingSystem.Controllers
         }
 
 
-        // [HttpPost]
-        // public IActionResult CreatePayment()
-        // {
-        //     var payment = _PaypalServices.CreatePayment(100, "http://localhost:44385/Payment/ExecutePayment", "http://localhost:44385/Payment/Cancel", "sale");
-        // 
-        //     return new JsonResult(payment);
-        // }
-        // 
-        // [HttpPost]
-        // public IActionResult ExecutePayment(string paymentId, string token, string PayerID)
-        // {
-        //     var payment = _PaypalServices.ExecutePayment(paymentId, PayerID);
-        // 
-        //     // Hint: You can save the transaction details to your database using payment/buyer info
-        // 
-        //     return Ok();
-        // }
+        public IActionResult CreatePayment()
+        {
+            var payment = _paypalServices.CreatePayment(100, "https://localhost:44385/Payment/ExecutePayment", "https://localhost:44385/Payment/Cancel", "sale");
+        
+            return new JsonResult(payment);
+        }
+        
+        public IActionResult ExecutePayment(string paymentId, string token, string PayerID)
+        {
+            var payment = _paypalServices.ExecutePayment(paymentId, PayerID);
+        
+            // Hint: You can save the transaction details to your database using payment/buyer info
+        
+            return Ok();
+        }
     }
 }

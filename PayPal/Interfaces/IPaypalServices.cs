@@ -1,6 +1,6 @@
 ﻿using PayPal.Api;
 
-namespace PaypalExpressCheckout.BusinessLogic.Interfaces
+namespace MountainTourismBookingSystem.PayPal.Interfaces
 {
     public interface IPaypalServices
     {

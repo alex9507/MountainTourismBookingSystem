@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using PayPal.Api;
-using PaypalExpressCheckout.BusinessLogic.ConfigOptions;
-using PaypalExpressCheckout.BusinessLogic.Interfaces;
+using MountainTourismBookingSystem.PayPal.ConfigOptions;
+using MountainTourismBookingSystem.PayPal.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -70,15 +70,16 @@ namespace MountainTourismBookingSystem.PayPal
                             sku = "sku"
                         }
                     }
-                },
-                payee = new Payee
-                {
-                    // TODO.. Enter the payee email address here
-                    email = "sb-hsrdr542042@personal.example.com",
-
-                    // TODO.. Enter the merchant id here
-                    merchant_id = "Acj2VElP4SQllSRFCPvaeojvJ3Z6SvsqhL8j8t3f6OPuA3deDTgO4N0y0JHW8yDMdzsYISXX5D7_9w_e"
                 }
+                //,
+                //payee = new Payee
+                //{
+                //    // TODO.. Enter the payee email address here
+                //    email = "timeschedulingsystem@gmail.com",
+                //
+                //    // TODO.. Enter the merchant id here
+                //    merchant_id = "Acj2VElP4SQllSRFCPvaeojvJ3Z6SvsqhL8j8t3f6OPuA3deDTgO4N0y0JHW8yDMdzsYISXX5D7_9w_e"
+                //}
             });
 
             return transactionList;

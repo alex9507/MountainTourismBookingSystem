@@ -110,6 +110,31 @@
                 });
             });
             // End of function $(document).ready(function ()
+
+            function Delete(id) {
+                if (confirm('Сигурни ли сте, че искате да изтриете този запис ?'))
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Delete", "Reservation")/' + id,
+                        success: function (data) {
+                            if (data.success) {
+                                dataTable.ajax.reload();
+                            }
+                            else {
+                                $('#msgErrorText').empty().append("Има проблем при изтриването на задачата.");
+                                $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                            }
+                        },
+                        error: function () {
+                            $('#msgErrorText').empty().append("Има проблем при изтриването на задачата.");
+                            $('#msgError').fadeIn(800).delay(3000).fadeOut(800);
+                        }
+
+                    });
+                }
+            }
+            // End of function Delete(id) {
         </script>
     }
 }

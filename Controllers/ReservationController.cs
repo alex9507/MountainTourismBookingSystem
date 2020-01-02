@@ -106,7 +106,7 @@ namespace MountainTourismBookingSystem.Controllers
                             c_date_from = re.dt_from,
                             c_date_to = re.dt_to,
                             c_status = re.status,
-                            c_amount = re.amount / 100,
+                            c_amount = re.amount,
                             c_currency = re.currency,
                             c_id = re.reservation_id
                         }).ToList();
@@ -114,6 +114,7 @@ namespace MountainTourismBookingSystem.Controllers
             return Json(data);
         }
 
+        [HttpPost]
         public IActionResult Delete(long id)
         {
             if (_signInManager.IsSignedIn(User) == true)
@@ -123,11 +124,11 @@ namespace MountainTourismBookingSystem.Controllers
                 _dbContext.Remove(reservation);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Reservation");
+                return Json(new { success = true });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return Json(new { success = false });
             }
         }
     }

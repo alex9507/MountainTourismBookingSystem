@@ -16,6 +16,9 @@ using Microsoft.Extensions.Logging;
 using Stripe;
 using MountainTourismBookingSystem.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using MountainTourismBookingSystem.PayPal;
+using MountainTourismBookingSystem.PayPal.Interfaces;
+using MountainTourismBookingSystem.PayPal.ConfigOptions;
 
 namespace MountainTourismBookingSystem
 {
@@ -57,6 +60,9 @@ namespace MountainTourismBookingSystem
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddSingleton<IPaypalServices, PaypalServices>();
+            services.Configure<PayPalAuthOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
