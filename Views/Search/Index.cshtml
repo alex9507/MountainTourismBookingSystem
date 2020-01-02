@@ -246,6 +246,11 @@
                         })
                     })
                     GenerateChalets(chalets);
+
+                    $('#products').easyPaginate({
+                            paginateElement: 'div.chalet',
+                            elementsPerPage: 6
+                        });
                 },
                 error: function (error) {
                     $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
@@ -334,6 +339,11 @@
                         })
                     })
                     GenerateChalets(chalets);
+
+                    $('#products').easyPaginate({
+                            paginateElement: 'div.chalet',
+                            elementsPerPage: 6
+                        });
                 },
                 error: function (error) {
                     $('#msgErrorText').empty().append("Има проблем при зареждането на информацията.");
