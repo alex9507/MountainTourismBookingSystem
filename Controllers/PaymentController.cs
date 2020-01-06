@@ -164,19 +164,65 @@ namespace MountainTourismBookingSystem.Controllers
         }
 
 
-        public IActionResult CreatePayment()
+        public IActionResult CreatePayment(Guid id, Guid dataGuid)
         {
-            var payment = _paypalServices.CreatePayment(100, "https://localhost:44385/Payment/ExecutePayment", "https://localhost:44385/Payment/Cancel", "sale");
-        
+            var vChalet = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+
+            if (vChalet == null)
+            {
+                return RedirectToAction("Cancel");
+            }
+
+            var vHelperData = _dbContext.ReservationDataHelper.Where(x => x.unique_id == dataGuid).LastOrDefault();
+
+            if (vHelperData == null)
+            {
+                return RedirectToAction("Cancel");
+            }
+
+
+            var payment = _paypalServices.CreatePayment((decimal)vHelperData.amount, "https://localhost:44385/Payment/ExecutePayment", "https://localhost:44385/Payment/Cancel", "sale");
+
+
+
             return new JsonResult(payment);
         }
         
-        public IActionResult ExecutePayment(string paymentId, string token, string PayerID)
+        public IActionResult ExecutePayment(string paymentId, string token, string PayerID, Guid id, Guid dataGuid)
         {
             var payment = _paypalServices.ExecutePayment(paymentId, PayerID);
-        
-            // Hint: You can save the transaction details to your database using payment/buyer info
-        
+
+            var vChalet = _dbContext.Chalet.Where(x => x.unique_id == id).FirstOrDefault();
+
+            if (vChalet == null)
+            {
+                return RedirectToAction("Cancel");
+            }
+
+            var vHelperData = _dbContext.ReservationDataHelper.Where(x => x.unique_id == dataGuid).LastOrDefault();
+
+            if (vHelperData == null)
+            {
+                return RedirectToAction("Cancel");
+            }
+
+            var vReservation = new ReservationModel()
+            {
+                dt = DateTime.Now,
+                chalet_id = vChalet.chalet_id,
+                dt_from = vHelperData.dt_from,
+                dt_to = vHelperData.dt_to,
+                is_full_day = vHelperData.is_full_day,
+                amount = vHelperData.amount,
+                currency = vHelperData.currency,
+                people_count = vHelperData.people_count,
+                color = vHelperData.color,
+                user_id = vHelperData.user_id
+            };
+
+            _dbContext.Reservation.Add(vReservation);
+            _dbContext.SaveChanges();
+
             return Ok();
         }
     }

@@ -38,8 +38,11 @@ MountainTourismBookingSystem@gmail.com
 01 01 1995
 
 Second Paypal Acc:
-timeschedulingsystem@gmail.com
-!Tim3Schedule123
+timeschedulingsystem@gmail.com ? systetimeschedulingm@gmail.com
+!Tim3Schedule123 
+
+sb-u9t4w821600@personal.example.com
+m$B&g43{
 
 https://blog.elmah.io/accepting-payments-with-stripe-and-aspnet-core/
 
@@ -51,45 +54,3 @@ Update-Database
 
 https://hassantariqblog.wordpress.com/2017/03/20/asp-net-core-sending-email-with-gmail-account-using-asp-net-core-services/
 ConfigurationManager.AppSettings["EmailUsername"].ToString()
-
-
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
-    <script>
-            // <button value="submit" id="paypal-button" class="btn btn-success btn-lg center-block"></button>
-            // <BR>
-            // <button id="checkout-button">Pay</button>
-            // var stripe = Stripe('@Stripe.Value.PublishableKey');
-            //
-            // var checkoutButton = document.querySelector('#checkout-button');
-            // checkoutButton.addEventListener('click', function () {
-            //   stripe.redirectToCheckout({
-            //     items: [{
-            //       // Define the product and SKU in the Dashboard first, and use the SKU
-            //       // ID in your client-side code.
-            //       sku: 'sku_123',
-            //       quantity: 1
-            //     }],
-            //     successUrl: 'https://localhost:44385/Payment/Success',
-            //     cancelUrl: 'https://localhost:44385/Payment/Cancel'
-            //   });
-            // });
-            //
-            // var CREATE_PAYMENT_URL = 'https://localhost:44385/Payment/CreatePayment';
-            // var EXECUTE_PAYMENT_URL = 'https://localhost:44385/Payment/ExecutePayment';
-            paypal.Button.render({
-                env: 'sandbox', //'production',
-                commit: true, // Show a 'Pay Now' button
-                payment: function () {
-                    return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {
-                        return data.id;
-                    });
-                },
-                onAuthorize: function (data) {
-                    return paypal.request.post(EXECUTE_PAYMENT_URL, {
-                        paymentID: data.paymentID,
-                        payerID: data.payerID
-                    }).then(function () {
-                        window.location.href = 'https://localhost:44385/Payment/Success'
-                    });
-                }
-            }, '#paypal-button');

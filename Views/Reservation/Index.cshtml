@@ -119,7 +119,7 @@
                         </form>
                     </div>
 
-                    <button value="submit" id="paypal-button" class="modal-content"> </button>
+                    <button value="submit" id="paypal-button" class="modal-content" onclick="postDataSave()"> </button>
                 </div>
 
                 <div class="modal-footer">
@@ -284,14 +284,16 @@
                 env: 'sandbox', //'production',
                 commit: true,
                 payment: function () {
-                    return paypal.request.post(CREATE_PAYMENT_URL).then(function (data) {
+                    return paypal.request.post(CREATE_PAYMENT_URL, {id: '@Model.unique_id',dataGuid: '@dataGuid'}).then(function (data) {
                         return data.id;
                     });
                 },
                 onAuthorize: function (data) {
                     return paypal.request.post(EXECUTE_PAYMENT_URL, {
                         paymentID: data.paymentID,
-                        payerID: data.payerID
+                        payerID: data.payerID,
+                        id: '@Model.unique_id',
+                        dataGuid: '@dataGuid'
                     }).then(function () {
                         window.location.href = 'https://localhost:44385/Payment/Success'
                     });

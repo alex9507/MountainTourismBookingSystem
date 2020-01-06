@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +41,13 @@
                         <li><a asp-area="" asp-controller="Search" asp-action="Index">Търсене</a></li>
                         @if (this.User.IsInRole("User"))
                         {
-                            <li><a asp-area="" asp-controller="Reservation" asp-action="Management">Моите Резервации</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Резервации<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Календар с Резервации", "Management", "Reservation")</li>
+                                    <li>@Html.ActionLink("Всчики Резервации", "Management", "Reservation")</li>
+                                </ul>
+                            </li>
                         }
                         @if (this.User.IsInRole("Manager") || this.User.IsInRole("Admin"))
                         {
@@ -73,7 +81,26 @@
                         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Контакти</a></li>
                     }
                 </ul>
-                <partial name="_LoginPartial" />
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Здравей, @UserManager.GetUserAsync(User).Result.FirstName @UserManager.GetUserAsync(User).Result.LastName !</a>
+                            </li>
+                            <li>
+                                <button type="submit" class="btn btn-link navbar-btn navbar-link"><span class="glyphicon glyphicon-log-in"></span> Изход</button>
+                            </li>
+                        </ul>
+                    </form>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a asp-area="Identity" asp-page="/Account/Register"><span class="glyphicon glyphicon-user"></span> Регистрация</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Login"><span class="glyphicon glyphicon-log-in"></span> Вход</a></li>
+                    </ul>
+                }
             </div>
         </div>
     </nav>
